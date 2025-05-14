@@ -1,0 +1,37 @@
+\chapter{}
+\label{appendix A}
+
+We are given a grid of values $\{f_{ij}\}_{i,j}$ that represent the value of a covariate at points $(x_i, y_j)$. If we take a point $(x,y)$ in the study area, and say that $y_1$ is the value directly below $y$, $y_2$ is the value directly above $y$, $x_1$ is the value directly below $x$ and $x_2$ is the value directly above $x$ on the grid, then we can use linear interpolation to estimate the covariate at $(x,y)$ as 
+
+$$
+\hat{f}(x,y) = \frac{y_2-y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y - y_1}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})
+$$
+
+where $f_{11}$ is the value of the covariate $f$ at $(x_1, y_1)$, $f_{12}$ the value of $f$ at $(x_1, y_2)$, $f_{21}$ the value of $f$ at $(x_2, y_1)$, and $f_{22}$ the value of $f$ at $(x_2, y_2)$.
+
+If we discretize the study area using $A_{ij} = \{(x,y) \in \mathbb{R}|x_i < x < x_{i+1}, y_j < y < y_{j+1}  \}$, then we can find the intensity of each area as
+
+
+$$
+\lambda_{ij} = \int_{x_i}^{x_{i+1}} \int_{y_i}^{y_{i+1}} \hat{f}(x,y) dydx
+$$
+$$
+=\int_{x_i}^{x_{i+1}} [\frac{y_2y-y^2/2}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y^2/2 - y_1y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})]_{y_1}^{y_2} 
+$$
+$$
+= \int_{x_i}^{x_{i+1}} [\frac{y_2(y_2-y_1)-(y_2-y_1)^2/2}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{(y_2-y_1)^2/2 - y_1(y_2-y_1)}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})]_{y_1}^{y_2} 
+$$
+$$
+= \int_{x_i}^{x_{i+1}}\frac{1}{2}(y_2+y_1)(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{1}{2}(y_2-3y_1)(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22}) 
+$$
+$$
+=  \frac{1}{2}[(y_2+y_1)(\frac{x_2x-x^2/2}{x_2-x_1}f_{11} + \frac{x^2/2-x_1x}{x_2-x_1}f_{21}) + (y_2-3y_1)(\frac{x_2x-x^2/2}{x_2-x_1}f_{12} + \frac{x^2/2-x_1x}{x_2-x_1}f_{22})]_{x_1}^{x_2}
+$$
+$$
+= \frac{1}{2} ((y_2+y_1)(\frac{x_2(x_2-x_1)-(x_2-x_1)^2/2}{x_2-x_1}f_{11} + \frac{(x_2-x_1)^2/2-x_1(x_2-x_1)}{x_2-x_1}f_{21}) + (y_2-3y_1)(\frac{x_2(x_2-x_1)-(x_2-x_1)^2/2}{x_2-x_1}f_{12} + \frac{(x_2-x_1)^2/2-x_1(x_2-x_1)}{x_2-x_1}f_{22})) 
+$$
+$$
+= \frac{1}{4} ((y_2+y_1)((x_2+x_1)f_{11} + (x_2-3x_1)f_{21}) + (y_2-3y_1)((x_2+x_1)f_{12} + (x_2-3x_1)f_{22})) 
+$$
+
+where $\lambda_{ij}$ is the intensity for area $i,j$.

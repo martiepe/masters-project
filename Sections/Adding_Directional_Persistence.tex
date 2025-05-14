@@ -1,0 +1,187 @@
+
+The Langevin process models animal movement as the drift along a surface with some randomness. This seems like a good model for how an animal might move, yet there are some traits of animal movement that he model lacks. One thing that the Langevin process lacks, that one might think is characteristic of animal movement, is directional persistence. Usually when an animal moves, it is the case that at a given point in time, the animal chooses a random direction to go in. Instead it is usually the case that if the animal is heading in a direction it is more likely to head in the same or a similar direction in the future. In other words it might be beneficial to the model to account for the directional persistence of the animal. A similar process to the Langevin process is the under damped Langevin process. Unlike the Langevin process, the under damped Langevin process includes directional persistence. The under damped Langevin process is defined by the system of SPDEs
+
+$$
+\begin{array}{lcl} dV_t & = & -\gamma V_t dt - \sigma^2 \nabla log(\pi(X_t))dt + \sqrt{2\gamma}\sigma dB_t \\ dX_t & = & V_t dt \end{array}
+$$
+
+Where $\gamma > 0$ and $\sigma^2 > 0$ are parameters, $B_t$ is the d-dimensional Brownian motion. $X_t$ is the position of the animal, thus $V_t$ can be interpreted as the velocity of the animal. Like the over damped Langevin process, the under damped version uses a utilization distribution $\pi$, and like the over damped process, the utilization distribution is also the stationary distribution of the process. This means that the same method used for data-integration using the over damped Langevin process, can be used for the under damped Langevin process as well.
+
+In the under damped Langevin process the velocity instead of the position is affected by the slope of the utilization distribution. From the term $\sigma^2 \nabla log(\pi(X_t))dt$ we see that the parameter $\sigma^2$ determines to what degree the the utilization distribution affects the velocity, where a larger $\sigma$ would give a greater effect from the UD. The parameter $\gamma$ of the underdamped Langevin process is not the same as in the Langevin process. The term $-\gamma V_t$ from the under damped process, shows that the process de-accelerates based on the velocity, it can therefor be interpreted as friction, and the size of the friction is determined by $\gamma$. (michelot) shows that if we let $\gamma \rightarrow \infty$ and $\sigma^2 \rightarrow \infty$ while $\sigma^2/\gamma$ remains constant, the underdamped Langevin process converges to the overdamped Langvin process. And the parameter $\gamma^2/2$ from the over damped process is the constant.
+
+
+
+
+
+
+The underdamped Langevin process achieves directional persistence by 
+
+If we think of a flat surface that the animal is moving on, the Langevin process would give movement that is 
+
+
+\section{Discretization}
+
+Like the overdamped Langevin process, the Underdamped process does not have a closed form expression for its likelihood. instead we have to to approximate it by discretizing the process, like with the overdamped process. A discretized solution to the underdamped langevin process can be found by integrating the equations, giving
+
+
+$$
+\begin{array}{lcl} V_t & = & V_0 e^{-\gamma t}-\sigma^2(\int_0^{t} e^{-\gamma(t-s)}\nabla log(\pi(X_s))ds) + \sqrt{2\gamma}\sigma + \int_0^{t} e^{-\gamma(t-s)} dB_s \\
+X_t & = & x_0 + \int_0^{t} V_s ds \end{array}
+$$
+
+
+\cite{cheng_underdamped_nodate} finds a discrete approximation by replacing $\nabla f(X_s)$ with $\nabla f(X_0)$, which gives the system of equations
+
+$$
+\begin{array}{lcl} V_t & = & V_0 e^{-\gamma t}-\sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(\pi(X_0))ds) + \sqrt{2\gamma}\sigma + \int_0^t e^{-\gamma(t-s)} dB_s \\
+X_t & = & X_0 + \int_0^t V_s ds \end{array}
+$$
+
+\cite{cheng_underdamped_nodate} shows that the distribution of $(X_{i+1}, V_{i+1}) = (X_{t_{i+1}}, V_{t_{i+1}})$ conditional on $(X_i, V_i) = (x_{t_i}, V_{t_i})$ is a normal distribution, and finds their mean and covariance matrix. This is done only for a specific value of $\gamma$, so the derivation of these for all values of gamma is shown in Appendix \ref{Appendix B}. The mean and covariance of the transitions are
+
+$$
+\mu = \begin{pmatrix}
+    X_i + V_i \frac{1-e^{-\gamma \Delta_i}}{\gamma} + \frac{\sigma^2}{\gamma}(\Delta_i - \frac{1-e^{-\gamma \Delta_i}}{\gamma})\nabla log(\pi(X_i)) \\
+    V_i e^{-\gamma \Delta_i} - \frac{\sigma^2}{\gamma}(1-e^{-\gamma \Delta_i}) \nabla log(\pi(X_i))
+\end{pmatrix}, \ \ \Sigma = \begin{pmatrix}
+    \Sigma_{11} & \Sigma_{21}^T \\ \Sigma_{21} & \Sigma_{22}
+\end{pmatrix}
+$$
+
+The blocks of the covariance matrix are
+
+$$
+\begin{array}{lcl}
+\Sigma_{11} &=& \frac{2\sigma^2}{\gamma}(\Delta_i + \frac{2}{\gamma} e^{-\gamma \Delta_i} - \frac{1}{2\gamma}e^{-2\gamma \Delta_i} - \frac{3}{2\gamma}) I_{2*2}
+\\
+\Sigma_{22} &=& \frac{2\sigma^2}{\gamma}(1-e^{-2\gamma \Delta_i}) I_{2*2}
+\\
+\Sigma_{21} &=& \frac{\sigma^2}{\gamma} (1 - 2e^{-\gamma \Delta_i} + 1 e^{-2\gamma \Delta_i})I_{2*2}
+\end{array}
+$$
+
+We do not observe the velocities $V_i$, so to express the likelihood of the model, we only include distribution of the $X_i$.
+
+
+\section{The Kalman Filter}
+The Kalman filter is an estimator for the states of a state-space model. A state-space model has two components: observations $X_k$ which we observe, and states $Z_k$ which are hidden. These are modeled using a transition equation and an observation equation
+
+$$
+\begin{array}{lcl}
+X_k &=& H_k Z_k + v_k
+\\
+Z_{k+1} &=& F_kZ_k + B_ku_k + w_k
+\end{array}
+$$
+
+The transition from one state to another is only dependent on the previous state, so the states form a Markov chain. The observations are only dependent on the current state, so the relationship is expressed as
+
+
+\begin{tikzpicture}[main/.style = {draw, circle}]
+%Nodes
+\node[main]        (state0)                              {$Z_0$};
+\node[main]        (state1)       [right=of state0] {$Z_1$};
+\node[main]        (staten)       [right=of state1] {$Z_n$};
+\node[main]        (obs0)       [below=of state0] {$X_0$};
+\node[main]        (obs1)       [below=of state1] {$X_0$};
+\node[main]        (obsn)       [below=of staten] {$X_0$};
+\node              (control0)       [above=of state0] {$u_0$};
+\node              (control1)       [above=of state1] {$u_1$};
+\node              (controln)       [above=of staten] {$u_n$};
+
+
+%Lines
+\draw[->] (state0.east) -- (state1.west);
+\draw[->] (state0.south) -- (obs0.north);
+\draw[->] (state1.south) -- (obs1.north);
+\draw[->] (staten.south) -- (obsn.north);
+\draw[->] (staten.south) -- (obsn.north);
+\draw[->] (control0.south) -- (state0.north);
+\draw[->] (control1.south) -- (state1.north);
+\draw[->] (controln.south) -- (staten.north);
+\draw[dashed, ->] (state1.east) -- (staten.west);
+\end{tikzpicture}
+
+
+$\textbf{H}_k$ is called the observation matrix, and determines how the true state is observed. $v_k$ is the error of the observations, and is Gaussian distributed with mean $\textbf{0}$ and covariance matrix $\textbf{Q}_k$. $\textbf{F}_k$ is the transition matrix, which determines how the states $\textbf{Z}_k$ transition. $\textbf{u}_k$ is the control vector, which gives input to the state transitions, and the control matrix $\textbf{B}_k$ acts on $\textbf{u}_k$. $\textbf{w}_k$ is transition noise, which has a Gaussian distribution with mean $\textbf{0}$ and covariance matrix $\textbf{R}_k$.
+
+The Kalman filter gives an estimate $\bm{\hat Z}_{n|m}$ of the hidden state $\textbf{Z}_n$ given the states up to time m. At time k, the estimate, given states up to time k-1, is 
+
+\
+
+Predicted state estimate: $\bm{\hat Z}_{k|k-1} = \textbf{F}_k\bm{\hat Z}_{k-1|k-1} + \textbf{B}_k\textbf{u}_k$
+
+Predicted estimate covariance: $\textbf{P}_{k|k-1} = \textbf{F}_k\textbf{P}_{k-1|k-1} \textbf{F}_k^T + \textbf{Q}_k$
+
+Innovation: $\bm{\tilde y}_{k} = \textbf{X}_k - \textbf{H}_k\bm{\hat Z}_{k|k-1}$
+
+Innovation covariance: $\textbf{S}_k = \textbf{H}_k \textbf{P}_{k|k-1}\textbf{H}_k^T + \textbf{R}_k$
+
+Optimal Kalman gain: $\textbf{K}_k = \textbf{P}_{k|k-1} \textbf{H}_k^T \textbf{S}_k^{-1}$
+
+Updated state estimate: $\bm{\hat Z}_{k|k} = \bm{\hat Z}_{k|k-1} + \textbf{K}_k \bm{\tilde y}_{k}$
+
+Updated estimate covariance: $\textbf{P}_{k|k} = (\textbf{I} - \textbf{K}_k \textbf{H}_k)\textbf{P}_{k|k-1}$
+
+Measurement residual: $\bm{\tilde y}_{k|k} = \textbf{X}_k - \textbf{H}_k \bm{\hat Z}_{k|k}$
+
+\
+
+Using the estimate of the Kalman filter, we can express the likelihood of the observations of the state-space model as 
+
+$$p(\textbf{X}) = \prod_{k=0}^T \mathcal{N}(\textbf{X}_k|\textbf{H}_k\bm{\hat Z}_{k|k-1}, \textbf{S}_k)$$
+
+
+
+
+
+The discretization of the underdamped Langevin equation can be modeled as a state-space model by letting the state be 
+
+$$
+\textbf{Z}_k= \begin{pmatrix}
+    \textbf{X}_k \\
+    \textbf{V}_k
+\end{pmatrix}
+$$
+
+We observe $\textbf{X}_k$ directly, so the covariance matrix $Q_k$ of the observation noise $v_k$ does not contribute to predicted estimate covariance. For he transition mtrix 
+
+
+$$
+\textbf{F}_k = \begin{pmatrix}
+    \textbf{I}_{2*2} & \frac{1-e^{-\gamma\Delta_i}}{\gamma} \textbf{I}_{2*2}\\ 
+    \textbf{0} & e^{-\gamma\Delta_i} \textbf{I}_{2*2}
+\end{pmatrix}
+$$
+
+The observation matrix of the discretization is
+
+$$
+\textbf{H}_k = \begin{pmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0
+\end{pmatrix}
+$$
+
+The control matrix is
+
+$$
+\textbf{B}_k = \begin{pmatrix}
+    \frac{\gamma}{\sigma^2}(\Delta_i - \frac{1-e^{-\gamma\Delta_i}}{\gamma})\textbf{I}_{2*2} \\
+    -\frac{\sigma^2}{\gamma}(1-e^{-\gamma \Delta_i})\textbf{I}_{2*2}
+\end{pmatrix}
+$$
+
+The control vector is 
+
+$$
+\textbf{u}_k = \nabla log(\pi(\textbf{X}_k))
+$$
+The covariance matrix of the transitions, $\textbf{Q}_k$, is the same as the covariance of the transitions of the discretized underdamped langevin process.
+
+\cite{reid_1_nodate}
+
+
+\section{An Example}
+
+

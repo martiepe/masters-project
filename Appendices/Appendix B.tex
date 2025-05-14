@@ -1,0 +1,63 @@
+\chapter{}
+\label{Appendix B}
+
+We want to find the distribution of the transistions for the discretization of the underdamped Langevin process. The discretization defines the transitions as 
+
+$$
+\begin{array}{lcl} V_t & = & V_0 e^{-\gamma t}-\sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(X_0))ds) + \sqrt{2\gamma}\sigma \int_0^t e^{-\gamma(t-s)} dB_s \\
+X_t & = & X_0 + \int_0^t V_s ds \end{array}
+$$
+
+A stochastic process of the form $X = X_0 + \mu + \int_0^tf(s)dB_s$ us called an Itô process. This process has a Gaussain distribution, with mean $\mu$ and variance $\int_0^tf(s)^2ds$\cite{iacus_simulation_2008}. the expression for $\tilde{v_t}$ matches that of an Itô process . The distribution of the transitions is then Gaussian. Furthermore, it's expectation is then
+
+$$
+\begin{array}{lcl}
+     E[\tilde{v_t}] & = & \tilde{v_0} e^{-\gamma t} - \sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(\tilde{x_0}))ds) & \\
+     & = & \tilde{v_0} e^{-\gamma t} - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{x_0})) (1-e^{-\gamma t})
+\end{array}
+$$
+The Brownian motion term is the only stochastic term in $\tilde{v_t}$ so we can say that its variance is
+
+$$
+\begin{array}{lcl}
+    Cov(\tilde{v_t}) & = & \frac{2\sigma^2}{\gamma}\int_0^t (e^{-\gamma (t-s)})^2ds \\
+    & = & \frac{2\sigma^2}{\gamma} (1-e^{-2\gamma t})
+\end{array}
+$$
+
+We can also infer that $\tilde{x_t}$ must be an Itô process by looking at its Browninan motion term
+
+$$
+\sqrt{2\gamma}\sigma \int_0^t \int_0^r e^{-\gamma (r-s)}dB_sdr = \sqrt{2\gamma}\sigma \int_0^te^{\gamma s} \int_s^t e^{-\gamma r}drdB_s =  \frac{\sqrt{2}}{\sqrt{\gamma}} \sigma \int_0^t(1-e^{-\gamma(t-s)})dB_s
+$$
+
+The mean of $\tilde{x_t}$ is then 
+ 
+$$
+\begin{array}{lcl}
+E[\tilde{x_t}] & = & E[\tilde{x_0} + \int_0^t \tilde{v_s} ds] \\ & = & \tilde{x_0} + \int_0^t E[\tilde{v_s}] ds \\
+& = & \tilde{x_0} + \frac{\tilde{v_0}}{\gamma}(1-e^{-\gamma t}) - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{x_0}))(t + \frac{1-e^{-\gamma t}}{\gamma})
+\end{array}
+$$
+
+And the variance of $\tilde{x_t}$ is 
+
+$$
+\begin{array}{lcl}
+Cov(\tilde{x_t}) & = & \frac{2\sigma^2}{\gamma}\int_0^t(\int_0^se^{-\gamma(t-r)})^2dr \ ds \ I_{2*2} \\
+& = & \frac{2\sigma^2}{\gamma}(t+ \frac{2}{\gamma}e^{-\gamma t} + \frac{1}{2\gamma}e^{-2\gamma t} - \frac{3}{2\gamma})I_{2*2}
+\end{array}
+$$
+
+The covariance matrix between $\tilde{x_t}$ and $\tilde{v_t}$ is 
+
+$$
+\begin{array}{lcl}
+    Cov(\tilde{x_t}, \tilde{v_t}) & = & (\tilde{x_t}-E[\tilde{x_t}])(\tilde{v_t}-E[\tilde{v_t}])^T \\
+    &=& E[(\frac{\sqrt{2}}{\sqrt{\gamma}}\sigma \int_0^t(1-e^{-\gamma(t-s)})dB_s)(\sqrt{2 \gamma}\sigma \int_0^te^{-\gamma (t-s)}dB_s)^T] \\
+    &=& 2 \sigma^2\int_0^t(1-e^{-\gamma(t-s)})e^{-\gamma(t-s)}ds \ I_{2*2} \\
+    &=& \frac{\sigma^2}{\gamma}(1-2e^{-\gamma t} + e^{-2\gamma t})I_{2*2}
+\end{array}
+$$
+
+

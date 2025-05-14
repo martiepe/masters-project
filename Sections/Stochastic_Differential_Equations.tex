@@ -1,0 +1,27 @@
+\section{Stochastic Differential Equations}
+Stochastic differential equations are equations that describe the changes in stochastic processes. These are widely used to model phenomena in areas such as finance, ecology and physics. The following section introduces the concept of a stochastic diffusion equation and the preliminaries that are necessary to define such an equation. For this purpose we use the definitions of \cite{bhattacharya_continuous_2023}.
+
+
+\subsection{Brownian Motion}
+to make sense of the k-dimensional case of Brownian motion, it is first necessary to define the one-dimensional case. The stochastic process $B = \{B_t:t\geq 0\}$ on $(\Omega, \mathcal{F}, P)$ with values in $S = \mathbb{R}$, $B_0 = 0$, having independent Gaussian increments $B_t - B_s$, for $0 < s < t$, with zero means  and variances $t-s$, and continuous paths $t \rightarrow B_t(\omega)$ for $\omega \in \Omega$. Furthermore, the standard Brownian motion with starting point $x \in \mathbb{R}$ can be defined by $B^x_t = x + B_t$, where $B_t$ is the standard Brownian motion.
+
+Using this definition, we can define the k-dimensional standard Brownian motion starting at $\textbf{x} \in \mathbb{R}^k$ as the k-dimensional vector $\mathbf{B}^\mathbf{x} = (B^{x_1}, \dots , B^{x_k})$, containing standard Brownian motions $B^{x_i}$ with starting points $x_i$.
+
+Finally Given a $k \times k$ matrix $\pmb{\sigma}$ and a k-dimensional vector $mu$, we can define the stochastic process $\mathbf{X}_t^\mathbf{x} = \mathbf{x} + \pmb{\mu}t + \pmb{\sigma} \mathbf{B}$ as the k-dimensional Brownian motion starting at $\mathbf{x} \in \mathbb{R}^k$, with drift coefficient $\pmb{\mu}$ and diffusion coefficient $\mathbf{D} = \pmb{\sigma} \pmb{\sigma}^T$ \cite{bhattacharya_continuous_2023}.
+
+\subsection{Stochastic Integrals}
+
+
+\subsection{Diffusion Processes}
+
+NEED CITATION
+
+A stochastic diffusion equation is defined as
+
+\begin{equation}
+    d{\textbf{X}}_t = {\pmb{\mu}} ({\textbf{X}}_t )dt + \pmb{\sigma}({X}_t ) d\textbf{B}_t, \   t > \alpha , \ \textbf{}{X}(\alpha) = {\alpha}
+\end{equation}
+
+Here $\textbf{X}_t$ is the multidimensional stochastic process that we are trying to model, $\textbf{X}(t)$ is the multidimensional solution to the stochastic differential equations, and $\mu(x)$ and $\sigma(x)$ are vectors that follow certain requirements. specifically 
+
+

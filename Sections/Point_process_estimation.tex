@@ -1,0 +1,93 @@
+
+
+
+In addition to the track data, we also want to model occurrence data. To combine the two sources of data we also want to use the same distribution f, that is used to model the track data. This way, we can use both types of data as sources of information for the distribution of the animals. One way of modelling the occurrence data is using an inhomogeneous Poisson process.
+
+\section{Point processes}
+
+
+
+The stationary distribution of the Langevin process is f. This means that at a given point in time the animals are distributed according to f. f can then be used in the intensity function. Since f is a probability distribution, an additional parameter must be included to ensure that the scale of the intensity is correct. The intensity function can then be expressed as
+
+$$\lambda(x) = \kappa f(x)$$
+
+If we have a study area A, we can then express the likelihood of having n observations at positions $\textbf{y}$ as
+
+\begin{equation}
+    L(\kappa, \beta|\textbf{y}) =  exp(-\kappa \int_{A}  f(x|\beta)dx)\prod_{i=1}^n \kappa f(y_i|\beta) = e^{-\kappa}\prod_{i=1}^n \kappa   f(y_i|\beta)
+\end{equation}
+
+An estimator for $\kappa$ can be found using the maximum likelihood (ML) method. The log-likelihood of the observations is
+
+$$
+l(\kappa, \beta|\textbf{n}) = -\kappa + \sum_{i=1}^n log(\kappa) + log(f(y_i))
+$$
+
+the sum of the integrals of the utilization distribution over all the subareas of the study area sums to one, so we can find the ML estimator as
+
+$$
+\frac{\partial l(\kappa, \beta|\textbf{y})}{\partial \kappa} = -1 +\sum_{i=1}^n \frac{1}{\kappa}  = 0
+$$
+
+which gives the estimator
+
+$$
+\hat{\kappa} = n
+$$
+
+Since we are mostly interested in $\beta$ this estimator is not interesting in itself, but it can be used to reduce the complexity of the likelihood when estimating $\beta$. Unlike $\kappa$, $\beta$ does not generally admit an analytical solution, and has to be estimated numerically instead. (IS THIS CORRECT?)
+
+\subsection{Cox Processes}
+A cox process is an inhomogeneous Poisson process, whose intensity is stochastic. Specifically ....... Cox processes can be used to model 
+
+
+
+
+\section{An Example}
+
+To demonstrate estimation of the point process we can discretize the study area into subareas, and simulate a number of points for each area from the Poisson distribution with mean equal to the integral of the intensity function over the area. In effect this is equivalent to simulating a full point process, then counting the number of points in each area. Using the same covariates from previous chapters, we have to use values on a grid to construct the intensity of the point process. Appendix ... gives a discretization, and asociated intensities for each area.
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Langevin-Poisson integration}
+
+In some cases tracking data over a study area coincides with other forms of data. One such case might be that of occurrence data, which is point data collected from single observations of what is being studied. For animals, such data might be gathered from direct or indirect observations of the animal.
+
+\section{Using a Bayesian Framework for Data Integration}
+We can combine occurrence and track data by using a Bayesian framework. This method requires that the track data and the occurrence data have a common origin from which the two processes arise. Since we know that the utilization distribution is the stationary distribution of the Langevin model, we can infer that at given point in time, the population of animals will be distributed according to the UD. We know then, the distribution of the occurrence and track data as a condition of the UD, and if the study time of the two data sources don't overlap, we can assume that the two sources are also independent from each other. We will also assume that the various tracks and occurrence observations are each independent of each other. To find the posterior distribution for the UD it then remains then to find the probability distributions of the tracking data, and the occurrence data. 
+
+The description of the probability of an animal being within an area at a given time, being equal to the UD, corresponds to an inhomogeneous Poisson point process, with the intensity being proportional to the UD. For agiven point $\textbf{x}$ in space, we can say that the intensity of the process is $\lambda(\textbf{x}) = \kappa \pi(\textbf{x}|\beta)$, where $\kappa>0$ is a constant. For an area $A$, the probability of finding a number $y$ individuals within the area is then $Poisson(y:\int_A \lambda(x)dx)$. If we have a discretization $A_{ij}$ of the study area, where each area has $y_{ij}$ observations, and these observations are independent, we can then express the likelihood as 
+
+
+\begin{equation}
+    P(\textbf{Y} = \textbf{y}|\theta) = \prod_{i=1}^n \prod_{j=1}^m Poisson(\textbf{y}_{ij}: \int_{A_{ij}} c\pi(x|\beta)dx)
+\end{equation}
+
+Where $ \pi(\textbf{x}|\beta) $ is the resource selection function \ref{eq: resource selection function} used as utilization distribution, and $\textbf{Y} = \{Y_{ij}\}$ 
+
+For the probability of the track data we encounter the same problem as in the previous section. The Langevin model does not admit a closed form transition probabilities. As in the previous section we will use the Euler discretization as an approximate distribution for the track data since it has been shown to be an accurate approximation for short step intervals. The distribution of the track data is then
+
+\begin{equation}
+    P(\textbf{X} = \textbf{x}|\theta) = \prod_{i=1}^M \prod_{j=1}^{m_i} q_{\Delta_i}(\textbf{x}_{ij}|\textbf{x}_{i(j-1)}, \beta, \gamma)
+\end{equation}
+    
+where $M$ is the number of tracks, $m_i$ is the number of data points in each track and $\textbf{x}_{ij}$ is the j-th data point in the i-th track and $\Delta_{ij}$ is the time-difference between $x_{ij}$ and $x_{i(j-1)}$. $q_{\Delta}$ are the normally distributed transition probabilities with mean $X_{i(j-1)} + \gamma^2\Delta_{ij}(\sum_{k = 1}^j \beta_k \nabla c_k(x_{i(j-1)}))$ and covariance matrix $gamma^2\Delta_{ij} \textbf{I}$. Since the occurrence data and the track data are independent we get the posterior distribution 
+
+
+\begin{equation}
+    \pi(\theta|\textbf{X}, \textbf{Y}) = \frac{P(\textbf{X} = \textbf{x}|\theta)P(\textbf{Y} = \textbf{y}|\theta)\pi(\theta)}{\int_{\Omega_\theta} P(\textbf{X} = \textbf{x}|\theta)P(\textbf{Y} = \textbf{y}|\theta)\pi(\theta)d\theta}
+\end{equation}
+
+The only remaining part to be defined is the prior distribution $\pi$. This is a measure of what our prior beliefs are about the parameters. There are two ways of doing this. One is using what is called an informed prior, which is a prior that incorporates knowledge from people which is then updated by the data. The other method is using an uninformed prior, which tries to spread out the distribution of the priors as much as possible, to give a prior containing the least amount of bias. This can be accomplished by for example using a normal distribution with very high variance. In this case we will use an uninformed prior with high variance normal distributions for the parameters. Since the speed parameter $\gamma^2$ does not take non-positive values, we Will use a normal prior for $log(\gamma^2)$.
+
+Usually it is hard to make inferences directly from the posterior distribution because in most cases it is difficult to compute the integral meant to normalize the distribution. Instead we can make inferences about the distribution using the Markov chain Monte Carlo methods (MCMC), which constructs a Markov-chain whose stationary distribution is equal to the target distribution that we are trying to sample from. Alternatively the method INLA (INSERT CITATION) uses ...
+
