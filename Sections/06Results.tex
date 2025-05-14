@@ -44,7 +44,7 @@ The same pattern as was observed in figure~\ref{fig:EM_thin_boxplot}, where the 
 Three studies were performed for the Langevin likelihood approximation using pre-computed Brownian bridge importance sampling. The first by testing the method on tracks with varying time resolutions, the second by testing the method with a varying number nodes in the Brownian bridges and the third by testing the method for a varying number of bridges.
 
 \subsection{Varying time resolution}
-To test the method at various resolutions, 100 tracks were simulated from the Langevin process. These tracks were thinned, so that the interval between observation were $\Delta_t \in \{0.1, \ 0.5, \ 1\}$. They were then shortened so each track contained 5000 observations. For each of these 300 tracks, the parameters $\gamma^2$ and $\beta$ were estimated. The result of these estimations are shown in figure~\ref{fig:varying thin boxplot precomputed BB}.
+To test the method at various resolutions, 100 tracks were simulated from the Langevin process. These tracks were thinned, so that the interval between observation were $\Delta_t \in \{0.1, \ 0.5, \ 1\}$. They were then shortened so each track contained 5000 observations. For each of these 300 tracks, the parameters $\gamma^2$ and $\beta$ were estimated. The result of these estimations are shown in figure~\ref{fig:varying dt boxplot precomputed BB}.
 
 \begin{figure}[H]
     \centering
@@ -53,28 +53,14 @@ To test the method at various resolutions, 100 tracks were simulated from the La
     \label{fig:varying dt boxplot precomputed BB}
 \end{figure}
 
-Figure~\ref{fig:varying dt boxplot precomputed BB} shows that this estimator is an improvement on the \cite{michelot_langevin_2019} for all the parameters. at a thinning of 10 there is little to no bias observed in the estimates based on the simulations, whereas using the \cite{michelot_langevin_2019} there is a noticeable bias at this level of thinning. For the speed parameter $\gamma^2$ figure~\ref{fig:varying dt boxplot precomputed BB}t shows that there is a bias which is observed for thinning of 50 and 100. in both of these cases all the estimations done, significantly underestimated the value of the parameter. One reason for this must be that the Brownian bridges become a much worse proposal density when the speed parameter used for generating the Brownian bridges deviates from the parameter which is being used to compute the likelihood. From figure~\ref{fig:EM_thin_boxplot} we can see that, for a thinning of 10, the estimated speed parameter is around 4.8 when using the same setup as used above. This suggests that the importance sampling likelihood estimate is robust against some deviation in $\gamma^2$ between the simulation of the bridge and the computation of the likelihood based on the bridge. However, as the error increases it leads to a bias in the estimated likelihood.
+
+
+
+From figure~\ref{fig:varying dt boxplot precomputed BB} we can see that the estimates from the simulated tracks using the precomputed Brownian bridge importance sampling likelihood showed no bias in any of the $\beta$-parameters, which is in contrast to the results using the Euler-Maruyama method where there were bias in the estimates for all the values of $dt$ used in figure~\ref{fig:varying dt boxplot precomputed BB}. An observation that is consistent with that of the Euler-Maruyama estimates is that the variance of the $\beta$-estimates is reduced as the time difference between observation $dt$ increases. 
 
 \
 
-A striking feature of these estimations, is that even though there is a large bias in the speed parameter $\gamma^2$, there appears to be little or no bias in the estimates of $\beta$. This is particularly interesting, since the drift term in the Langevin process is scaled by $\gamma^2$. This might suggest that the variance used in making the Brownian bridges is not that important when it comes to estimating $\beta$, but is more important when it comes to estimating $\gamma^2$.
-
-\ 
-
-\cite{michelot_langevin_2019} observes that when the number of observations used to estimate is held constant, but the distance between the observations increases, the variance of the estimates for $\beta$ decrease. This is also observed in figure~\ref{fig:varying dt boxplot precomputed BB}. \parencite{michelot_langevin_2019} attributes this to the fact that the tracks with greater distances explore more of the covariates, and so are less likely to be concentrated on a ...
-
-
-\
-
-In the simulations done in figure~\ref{fig:varying dt boxplot precomputed BB}, The number of nodes used was the same as the number of nodes used to simulate the Langevin process. We can see how the parameter estimates 
-
-
-
-- no visible bias in beta
-- variance reduces as distance increases for beta
-- bias for gamma
-- same variance over time for gamma
-- we can compare this to the EM method
+In addition there is a bias in the $\gamma^2$-estimates, which is also something seen in the Euler-Maruyama estimates. The estimates using precomputed Brownian bridge importance sampling likelihood, do however have a smaller bias than is observed for the Euler-Maruyama method in figure~\ref{fig:EM_thin_boxplot}. For $dt=0.1$, there is little to no bias, whereas for the Euler-Maruyama method there is observable bias in $\gamma^2$ for this value of $dt$. The variance of the $\gamma^2$-estimates is stable or slightly increasing with $dt$, which is also observed for the Euler-Maruyama method.
 
 
 \begin{comment}
