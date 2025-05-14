@@ -1,7 +1,7 @@
 
 
 %interpretation of results
-
+\section{Interpretation of Results}
 
 Through simulation studies, I have tested three potential methods for reducing the bias seen in the \parencite{michelot_langevin_2019} estimator for the Langevin process. The result of the first of these studies is shown in figure~\ref{fig:EKF_thin_boxplot}. This figure shows that the likelihood obtained by using the Extended Kalman filter performs slightly worse than the Euler-Maruyama method for the parameter $\beta_1$ and $\beta_2$. A reason for this might be that the method was tested in a scenario where the Brownian motion is much larger than the drift in the Langevin process, which is what one might expect in an animal setting. This makes the predict steps of the extended Kalman filter undershoot the steps of the Langevin process. In turn this leads to an error, which is compounded every time the predict step is performed. If the position used in the predict step is wrong, the prediction of the covariance using the curvature of the covariates also becomes wrong. To see how the extended Kalman filter works in practice I used the covariates from earlier and plotted the predict steps of the Langevin process together with steps of the extended Kalman filter, and the 90\% confidence level using the predicted covariance. The results are shown in figure~\ref{fig:EKF high diffusion}. 
 
@@ -14,9 +14,15 @@ Through simulation studies, I have tested three potential methods for reducing t
 \end{figure}
 
 Figure~\ref{fig:EKF high diffusion} shows that there is little correspondence between the path of the predictions made by the extended Kalman filter and the Langevin process. In this case the paths have ended up going in almost opposite directions. This happens because the Langevin process pictured is dominated by randomness, which also means that the Langevin path is much longer than the path from the extended Kalman filter. Since the intermediate values of extended Kalman filter do not approximate the intermediate values of the Langevin process wee, doing multiple steps of the extended Kalman filter might not make an improvement to the estimate
-The extended Kalman filter might work better. Using intermediate predict steps in the extended Kalman filter might work better in scenarios where the diffusion is maller and the drift larger, since the predictions would deviate less from the true values of the Langevin process.
+The extended Kalman filter might work better. Using intermediate predict steps in the extended Kalman filter might work better in scenarios where the diffusion is smaller and the drift larger, since the predictions would deviate less from the true values of the Langevin process.
 
+\
 
+Figure~\ref{fig:varying dt boxplot BB} shows that the method using the Brownian bridge importance sampling likelihood eliminated the bias observed in the estimates using the Euler-Maruyama method in figure~\ref{fig:EM_thin_boxplot}. This is not surprising, as the importance sampling estimate should converge to the correct value of the likelihood, and since the proposal being used is similar to the Langevin process. The figure also shows that there were two estimates when the time difference between observations was $dt=1$ which overestimated the value of the parameter $\gamma^2$ by a large margin. This might caused by the method which was used to find maximum likelihood. The maximum likelihood was found by using the "L-BFGS-B" method implemented in R optim, and the likelihood used, simulated new Brownian bridges each time it was evaluated. This meant that there was stochasticity in the likelihood, which could mean that optimization algorithm found a value of the likelihood that had a high value because of randomness. The estimates that were found were still an improvement on the estimates using the Euler-maruyama method, butthey could perhaps be improved further by simulating standard Gaussian variables $Z$ beforehand, then transforming them by using $\gamma Z +\mu$ to give Brownian bridges scaled with the right speed parameter. The likelihood estimates obtained by doing this would be deterministic, which might reduce the variance of the estimates, and hinder outliers.
+
+\
+
+Another observation from figure~\ref{fig:varying dt boxplot BB} is that the variance of the $\beta$-parameters is reduced as the time difference of the observations is increased, when the number of observations is held constant. The same explanation as was used to explain the same phenomenon for the Euler-Maruyama estimates, can be used in this case: that when more fo the covariate range is explored, the variance of the coefficient estimates is reduced. Since estimates are unbiased at all values of $dt$, this suggests that If we are given the choice between a higher frequency of observations of an animals movement or a lower frequency, we should prefer the lower frequency, given that they have the same cost to acquire.
 
 
 
@@ -32,7 +38,7 @@ The extended Kalman filter might work better. Using intermediate predict steps i
 
 
 %what went well, what are constraints
-
+\section{Constraints and limitations}
 
 
 
@@ -41,8 +47,8 @@ The extended Kalman filter might work better. Using intermediate predict steps i
 
 
 %applications
-
-
+\section{Applications}
+The method can be used for other transition functions aswell
 
 
 
@@ -51,7 +57,7 @@ The extended Kalman filter might work better. Using intermediate predict steps i
 
 
 %what is unknown or needs more exploration
-
+\section{Proposals for Future Research}
 
 
 
