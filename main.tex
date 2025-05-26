@@ -27,7 +27,6 @@
 \usepackage{subfig}
 \usepackage{comment}
 
-
 \usepackage[backend = biber,
             style = numeric,
             date = long,     % Long: 24th Mar. 1997 | Short: 24/03/1997
@@ -35,7 +34,9 @@
             maxcitenames = 3,   % max names to include before et. al.
             ]{biblatex} %customize the look of your citations and bibliography
 %\addbibresource{references.bib} %declare the bibliography resource
-\usepackage{comment} %to be able to comment out sections in the .tex files
+\usepackage{comment} 
+
+
 \usepackage{afterpage} %to customize page commands such as below
 \newcommand\myemptypage{
     \null
@@ -97,6 +98,8 @@ Department of Mathematical Sciences \\
 \addcontentsline{toc}{chapter}{\protect\numberline{}Abstract} %add the chapter to the table of contents, this is not automatically added when creating unnumbered chapters (*). Add it in a chapter style, and keep all chapters on the same numberline indent regardless of number or not on the chapter
 \input{Sections/00Abstract} %insert the chapter text from the files
 
+
+
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{\protect\numberline{}Preface} 
 \input{Sections/01Preface}
@@ -143,16 +146,7 @@ Department of Mathematical Sciences \\
 %the cleardoublepage command ensures that the next text page is on the right-hand side (odd page) and produces a blank page if necessary to achieve that, as all chapters should begin on the right hand side
 
 
-% Defining front matter settings
-\frontmatter
 
-% Inserting table of contents
-\tableofcontents
-
-% Inserting list of figures & list of tables
-\listoffigures
-
-\listoftables
 
 % Defining main matter settings (Norsk: innstillinger for hoveddelen av teksten)
 \mainmatter
@@ -191,7 +185,6 @@ Department of Mathematical Sciences \\
 \import{./Appendices/}{github}
 \import{./Appendices/}{Appendix A}
 \import{./Appendices/}{Appendix B}
-\import{./Appendices/}{Appendix C}
 
 % End of document
 \end{document}

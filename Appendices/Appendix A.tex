@@ -1,6 +1,78 @@
 \chapter{}
-\label{appendix A}
+\label{Appendix: finding BB gradient}
 
+
+
+
+\section{gradients for precomputed brownian bridges likelihood}
+
+In this appendix I derive the gradient of the Langevin likelihood estimate found using importance samling with brownian bridges \ref{eq: importance sampling likelihood}. The same gradient will be used for the method where the brownian bridges are precomputed as when they are not. For the importance sampling likelihood when the bridge are not pre-computed, we could have differentiated the likelihood with respect to the fact that the positions of the bridges are dependent on the speed parameter $\gamma^2$. However, I don't expect small differences in the proposal density to have an effect on the unbiasedness of the importance sampling estimate of the likelihood.
+
+\subsection{Gradient With Respect to \beta}
+Using $L_{ij} = \frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk})$,  we can write where $f_{ijk}$ is the density of transition $k$ of bridge $j$ between observations $i$ and $i+1$, and $P_{ij}$ is the density of bridge $j$ between observations $i$ and $i+1$.
+
+
+\begin{equation} 
+\begin{split}
+\partial_\beta l & =  \partial_\beta \sum_{i=1}^K log(\frac{1}{M}\sum_{j=1}^M\frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}) \\
+    & =  \frac{\sum_{j=1}^ML_{ij}\partial_\beta log(L_{ij})}{\sum_{j=1}^ML_{ij}}
+\end{split}
+\end{equation}
+
+
+Then, since proposal of bridge $ij$, $P_{ij}$, is independent of $\beta$ we get
+$$
+\partial_\beta log(L_{ij}) =  \sum_{k=0}^N \partial_\beta log(f_{ijk})
+$$
+
+
+\begin{equation} 
+\begin{split}
+\partial_\beta log(f_{ijk}) & = \partial_\beta (-log(2\pi \Delta \gamma^2) - \frac{1}{2\Delta \gamma^2} \left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2) \\
+& = -\frac{1}{2\Delta\gamma^2}\partial_\beta (B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta) \frac{d}{dx} \left\lVert x \right\rVert_2^2(B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta) \\
+& = \frac{1}{2} g(B_{ijk})^T(B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta)
+\end{split}
+\end{equation}
+
+
+
+
+\subsection{Gradient With Respect to \gamma^2}
+Since we are precomputing the bridges, the probability of generating the bridges $P_ij$ is constant with respect to $\gamma^2$.
+
+$$
+\partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} log(L_{ij})}{\sum_{j=1}^ML_{ij}}
+$$
+
+
+$$
+\partial_{\gamma^2} log(f_{ijk}) = \partial_{\gamma^2} (-log(\gamma^2) - \frac{1}{2\Delta\gamma^2}\left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2)
+$$
+
+using the product rule
+
+$$
+\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} -(\partial_{\gamma^2} \frac{1}{2\Delta \gamma^2})\left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2 -  \frac{1}{2\Delta \gamma^2} \partial_{\gamma^2} \left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2 
+$$
+
+
+
+$$
+\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2 -  \frac{1}{2\Delta \gamma^2} (\partial_{\gamma^2} \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta) \partial_x \left\lVert x\right\rVert_2^2 (B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta )
+$$
+
+
+
+$$
+\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta \right\rVert_2^2 - \frac{1}{2\gamma^4} (g(B_{ijk})\beta)^T (B_{ijk+1} - B_{ijk} - \frac{\Delta\gamma^2}{2} g(B_{ijk})\beta )
+$$
+
+
+
+
+
+\begin{comment}
+    
 We are given a grid of values $\{f_{ij}\}_{i,j}$ that represent the value of a covariate at points $(x_i, y_j)$. If we take a point $(x,y)$ in the study area, and say that $y_1$ is the value directly below $y$, $y_2$ is the value directly above $y$, $x_1$ is the value directly below $x$ and $x_2$ is the value directly above $x$ on the grid, then we can use linear interpolation to estimate the covariate at $(x,y)$ as 
 
 $$
@@ -35,3 +107,4 @@ $$
 $$
 
 where $\lambda_{ij}$ is the intensity for area $i,j$.
+\end{comment}

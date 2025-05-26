@@ -1,6 +1,48 @@
 \chapter{}
 \label{Appendix: Langevin with obs error}
+\section{Including Observation Error}
+The estimates found using the method in subsection~\ref{subsec: importance sampling} do not account for observation error in the track data. The estimator found by \cite{michelot_langevin_2019} does not account for observation error either. Instead they circumvent this error by preprocessing their data. They do this by using the package "Crawl" \cite{johnson2018crawl}, which finds estimates of the true postions of the observations using the Kalman filter. This method can also be used for the estimator found in subsection~\ref{subsec: importance sampling}. In this section i present an alternative to estimating the Langevin process parameter, whcich accounts for measurement error.
 
+\
+
+I will assume that the observation errors $\epsilon_k$ are i.i.d Gaussian distributed, with zero mean and covariance $r^2 I_{2*2}$. The process of observing the Langevin process can be expressed as a hidden variable model, where we have observations $Y_k$ and the hidden process $X_k$ for $k=1,\dots,K$. Because all the information about the observations $Y_k$ is held in the hidden variable $X_k$  and all the informating about $X_k$ is held in $X_{k-1}$ we can write
+$$
+p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(Y_{K}|X_{K})p(X_k, Y_{K-1},X_{K-1},\dots) =p(Y_{K}|X_{K})p(X_k | X_{K-1},)p(Y_{K-1},X_{K-1},\dots)
+$$
+
+this leads to
+
+$$
+p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(Y_{K}|X_{K})p(X_k | X_{K-1},)p(Y_{K-1},X_{K-1},\dots)
+$$
+
+
+These steps can be replicated to get 
+
+$$
+p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p_{\Delta_k}(X_k|X_{k-1})
+$$
+
+We can find the density of the observations by integrating over the hidden variables
+
+$$
+p(Y_K, \dots Y_1) = \int \dots \int  p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p_{\Delta_k}(X_k|X_{k-1}) dX_1 \dots dX_k
+$$
+
+
+The Euler Maruyama transition density $p_{\Delta_k}(X_{k+1}|X_k)$ is inaccurate for large values of $\Delta$, as has been discussed in earlier sections. To correct for this we can do as in section subsection~\ref{subsec: Monte-Carlo Estimation}, and add a series of intermediate hidden variable $\textbf{Z}_k = (Z_{k1}, \dots Z_{kN})$ between $X_k$ and $X_{k+1}$. 
+
+$$
+p(Y_K,\dots Y_1) = \int \dots \int  p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p(X_k| \textbf{Z}_k)p(\textbf{Z}_k |X_{k-1}) dX_1d\textbf{Z}_1 \dots d\textbf{Z}_{K-1} dX_K 
+$$
+
+From here we can use the importance sampling estimator used in subsection~\ref{subsec: importance sampling}, but instead of using Brownian bridges between observations, we use Brownian bridges between simulated observation error around the observed locations. These points are simulated according to the observation model, which in our case is a normal distribution with zero mean and variance $r^2$. The proposal observation error cancels out with the observation error of the process, since they are symmetric, so we get the estimator
+
+$$
+\hat{l}(\beta, \gamma^2, r^2) =\frac{1}{M} \sum_{i = 1}^M  \frac{p(X_1)\prod_{k=2}^K p(X_k| \textbf{Z}_k^i)p(\textbf{Z}_k^i |X_{k-1})}{q(\textbf{Z}^i|\textbf{X}^i) q(\textbf{X}^i)}
+$$
+
+where $$
 
 
 \begin{comment}

@@ -1,18 +1,9 @@
 
 
-
-
-
-In this thesis I have explored three method for reducing the bias shown in the parameter estimates of the Langevin process using the Euler-Maruyama method. Of these using Brownian bridge as a proposal in importance sampling to estimate an integral of hidden states 
-
-
+In conclusion, the bias seen in the Langevin movement model when observations are sparse can be removed by using Monte Carlo integration to integrate over intermediate states between observations. This can be done more efficiently by using importance sampling with Brownian motion with observations as endpoints as a proposal. For the Langevin movement model we have that a lower sampling frequency gives a lower variance for utilization distribution parameters. If the Langevin movement model is used to model animal movement, this fact can be used to improve experiments, since it is computationally feasible to obtain unbiased estimates of the utilization distribution parameters even when step intervals between samples are large. The remaining questions about this method are how to best choose the number of bridges $M$ and the number of bridge nodes $N$ used in the method and whether or not it is a good model for animal movements. If $N$ is too low, the bridges will not accurately model the Langevin process. However, this can be compensated for by using a higher $M$. To ensure that the method gives the correct answer, one could try using more bridges. If the estimate is accurate, then increasing $M$ should have little effect on the estimates, which can be used to check if the likelihood approximation is accurate. In addition,
+the Langevin model is a simple model, which might not capture the complete scope of an animal's movement behavior. For example, the Langevin movement model cannot model persistence in animal movement. 
 
 
 
 
-
-
-
-
-
-If given the option between track data at long distances or short, the long distanceses should be preferred
+ 

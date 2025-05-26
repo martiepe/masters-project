@@ -5,17 +5,17 @@ In this section i present two methods that attempt to reduce the bias seen in th
 \section{Extended Kalman Filter}
 \parencite{kulikov_extended_2024} describes one method attempting to more accurately approximate the likelihood of a diffusion processes using the extended Kalman filter. If we use the Euler-Maruyama method to describe a state space model, we can then find a likelihood using the extended Kalman filter. In addition, we can imrpove this likelihood-approximation by adding extra hidden states between the states that we have observed. For the Langevin process, the state space representation is 
 
-$$X_{k+1} = f(X_k) + w_k = X_k + \frac{\gamma^2\Delta_k}{2}\nabla log(\pi(X_k)) + w_k$$
+$$\textbf{X}_{k+1} = f(\textbf{X}_k) + \textbf{w}_k = \textbf{X}_k + \frac{\gamma^2\Delta_k}{2}\nabla log(\pi(\textbf{X}_k)) + \textbf{w}_k$$
 
-$$Z_k = h(X_k) + w_k$$
+$$\textbf{Z}_k = h(\textbf{X}_k) + \textbf{w}_k$$
 
-where $w_k$ has a gaussian distribution with $0$ mean and covariance $\gamma^2\Delta_k I_{2*2}$, and $v_k$ has $0$ mean and covariance $R$. In the case that the process is being observed directly the function $h$ is the identity function, and the matrix $R$ is a zero-matrix. The method described in \parencite{kulikov_extended_2024} adds a mesh of $L$ hidden states to the state space model between the observations $Z_i$ and $Z_{i+1}$. When using the extended Kalman filter on the added mesh-states, only the predict step is performed since there are no observations. The likelihood is then computed using \eqref{eq: EKF likelihood}, which can be used to make estimates about the parameters. 
-
-\
-
-The matrices $F_k$ and $H_k$ in section~\ref{sec: EKF} are the jacobians of the transition and observation functions. Since the observation function $h$ is the identity function, we get that $H_k = I_{2*2}$. Additionally we have that $F_k = Jac(f) = Jac(x + \frac{\gamma^2 \Delta}{2}\nabla log(\pi(x))) = I_{2*2} + \frac{\gamma^2 \Delta}{2} H(\log(\pi(x)))$. $H(\log(\pi(x)))$ is the hessian of the log of the utilization distribution, which, if we insert the resource selection function, becomes $H(\sum_{i=1}^n \beta_i c_i(x)) = \sum_{i=1}^n \beta_iH( c_i)(x)$. computing this matrix involves taking the second derivative of the covariate functions. This can be found using the method described in subsection~\ref{subsec: second derivative}.
+where $\textbf{w}_k$ has a gaussian distribution with $0$ mean and covariance $\gamma^2\Delta_k I_{2*2}$, and $\textbf{v}_k$ has $0$ mean and covariance $\textbf{R}$. In the case that the process is being observed directly the function $h$ is the identity function, and the matrix $\textbf{R}$ is a zero-matrix. The method described in \parencite{kulikov_extended_2024} adds a mesh of $L$ hidden states to the state space model between the observations $\textbf{Z}_i$ and $\textbf{Z}_{i+1}$. When using the extended Kalman filter on the added mesh-states, only the predict step is performed since there are no observations. The likelihood is then computed using \eqref{eq: EKF likelihood}, which can be used to make estimates about the parameters. 
 
 \
+
+The matrices $\textbf{F}_k$ and $\textbf{H}_k$ in section~\ref{sec: EKF} are the jacobians of the transition and observation functions. Since the observation function $h$ is the identity function, we get that $H_k = I_{2*2}$. Additionally we have that $\textbf{F}_k = Jac(f) = Jac(\textbf{x} + \frac{\gamma^2 \Delta}{2}\nabla log(\pi(\textbf{x}))) = I_{2*2} + \frac{\gamma^2 \Delta}{2} H(\log(\pi(\textbf{x})))$. $H(\log(\pi(\textbf{x})))$ is the hessian of the log of the utilization distribution, which, if we insert the resource selection function, becomes $H(\sum_{i=1}^n \beta_i c_i(\textbf{x})) = \sum_{i=1}^n \beta_iH( c_i)(\textbf{x})$. computing this matrix involves taking the second derivative of the covariate functions. This can be found using the method described in subsection~\ref{subsec: second derivative}.
+
+
 \begin{comment}
     
 ADD THIS TO THE DISCUSSION
@@ -85,14 +85,23 @@ curse of dimmensionality
 
 \section{Monte-Carlo Estimation of Likelihood}
 \label{sec: Monte-Carlo Estimation}
-For the second method, consider a hidden variable $\textbf{z} = (z_1, \dots z_n)$ which is a set of states between two  observations of the Langevin process, $X_k$ and $X_{k+1}$. We can write the joint density of transitioning from the first observation to the second observation via these states as $p(X_{k+1}, \textbf{z} | x_k) = p(X_{k+1}|\textbf{z})p(\textbf{z}|X_k)$. From here we can integrate out the hidden variable to get the likelihood of the observations, $p(X_{k+1}|X_k) = \int p(X_{k+1}, \textbf{z} | x_k)dz$. Because the time difference is smaller between the states in $\textbf{z}$, The Euler-Maruyama method should be a better approximation for the Langevin process than it would be between the observations $x_k$ and $x_{k+1}$.  We can approximate this integral by using the Monte-Carlo method described in subsection~\ref{subsec: Monte-Carlo Estimation}. We can sample M paths $\textbf{z}^i = (z_1^i, \dots,z_N^i)$ each with N nodes, using $z_{j+1}^i = z_j^i + \nabla log(\pi(z_j^i)) + \frac{\Delta_k\gamma^2}{N+1}\epsilon_j^i$ where $\epsilon_j^i$ two dimensional standard Gaussian distributions for $i=1, \dots , M$ and $j = 1,\dots , N$, using $z_1^i = x_k$ and $\Delta_k = t_{k+1}-t_k$. We then get the likelihood estimate
+For the second method, consider a hidden variable $\textbf{Z} = (\textbf{Z}_1, \dots \textbf{Z}_n)$ which is a set of states between two  observations of the Langevin process, $\textbf{X}_k$ and $\textbf{X}_{k+1}$. We can write the joint density of transitioning from the first observation to the second observation via these states as 
+
+$$p(\textbf{X}_{k+1}, \textbf{Z} | \textbf{X}_k) = p(\textbf{X}_{k+1}|\textbf{Z})p(\textbf{Z}|\textbf{X}_k) = q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}_1|\textbf{X}_k)$$ 
+
+From here we can integrate out the hidden variable to get the likelihood of the observations, 
+
+
+$$p(\textbf{X}_{k+1}|\textbf{X}_k) = \int q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}_1|\textbf{X}_k)d\textbf{Z}$$
+
+Because the time difference between the states in $\textbf{z}$, is smaller than the time difference between $\textbf{X}_{k+1}$ and $\textbf{X}_k$, so $q_{\Delta_k/(N+1)}$ should be a better approximation for the Langevin process than $q_{\Delta_k}$. We can approximate this integral by using the Monte-Carlo method described in subsection~\ref{sec: Monte Carlo integration}. We can sample M paths $\textbf{Z}^i = (\textbf{Z}_1^i, \dots,\textbf{Z}_N^i)$ each with N nodes, using $\textbf{Z}_{j+1}^i = \textbf{Z}_j^i + \nabla log(\pi(\textbf{Z}_j^i)) + \frac{\Delta_k\gamma^2}{N+1}\bm \epsilon_j^i$ where $\bm \epsilon_j^i$ two dimensional standard Gaussian distributions for $i=1, \dots , M$ and $j = 1,\dots , N$, using $\textbf{Z}_0^i = \textbf{X}_k$. We then get the likelihood estimate
 
 $$
-\hat{L}(\theta|X_k, X_{k+1}) =  \frac{1}{M}\sum_{i=1}^M p(X_{k+1}|\textbf{z}_i)p(\textbf{z}_i|X_k)
+\hat{L}(\bm \beta , \gamma^2|X_k, X_{k+1}) =  \frac{1}{M}\sum_{i=1}^M q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}^i_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}^i_1|\textbf{X}_k)
 \label{eq: montecarlo likelihood}
 $$
 
-If the hidden states $z_n$ are evenly distributed in time, and the number of states $n$ is sufficiently high, then they should approximate the Langevin process accurately, as evidenced by figure~\ref{fig:MALA}. In turn this means the Monte-Carlo likelihood estimate should be unbiased for the transition likelihood of the Langevin process. An important point about this likelihood estimate is that it is stochastic, which has to be accounted for when doing estimation. 
+If the hidden states $\textbf{Z}_i$ are evenly distributed in time, and the number of states $N$ is sufficiently high, then they should approximate the Langevin process accurately, as evidenced by figure~\ref{fig:MALA}. In turn this means the Monte-Carlo likelihood estimate should be unbiased for the transition likelihood of the Langevin process. An important point about this likelihood estimate is that it is stochastic, which has to be accounted for when doing estimation. 
 
 \begin{comment}
 \parencite{durham_numerical_2002} uses the Nelder-Mead optimization algorithm to find maximum likelihood estimates. This is a direct search method, meaning it does not compute the gradient of the function that is being minimized. This is an advantage when the likelihood estimate is stochastic since gradients require evaluating the function at close intervals which may be subject to a lot of noise.     
@@ -103,17 +112,22 @@ If the hidden states $z_n$ are evenly distributed in time, and the number of sta
 
 \subsection{Importance Sampling}
 \label{subsec: importance sampling}
-One problem with the likelihood estimator \eqref{eq: montecarlo likelihood} is that the last step of the probability $p(X_{k+1}|z_n)$ often has a very small value. This is because the paths $\textbf{z}^i$ diverge more and more from the true path that the Langevin process used, and for most paths the last state ends far away from the next observation. In turn this means that most simulations of $\textbf{z}$ contribute very little to the estimated likelihood. And a small number of simulations that end up landing close to $X_{k+1}$, end up contributing to a large part of the estimate, giving the estimate very high variance. \parencite{durham_numerical_2002} improves upon the Monte-Carlo estimate of the transition by using importance sampling, described in subsection~\ref{subsec: importance sampling}, into the method. Instead of sampling $\textbf{z}$ from the Langevin process, they sample it from a different distribution $q$ and use the estimate
+One problem with the likelihood estimator \eqref{eq: montecarlo likelihood} is that the last step of the probability $q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)$ often has a small value. This is because the paths $\textbf{Z}$ diverge more and more from the true path that the Langevin process used, which means for many paths  the last state ends far away from the next observation. In turn this means that most simulations of $\textbf{z}$ contribute very little to the estimated likelihood. And a small number of simulations that end up landing close to $X_{k+1}$, end up contributing to a large part of the estimate, giving the estimate high variance. \parencite{durham_numerical_2002} improves upon the Monte-Carlo estimate of the transition by using importance sampling, described in subsection~\ref{subsec: importance sampling}, into the method. Instead of sampling $\textbf{Z}$ from the Langevin process, they sample it from a different distribution $p$ and use the estimate
 
 \begin{equation}
-\hat{L}(\theta|X_k, X_{k+1}) = \frac{1}{M}\sum_{i=1}^M \frac{p(X_{k+1}|\textbf{z}_i)p(\textbf{z}_i|X_k)}{q(\textbf{z}_i|X_k, X_{k+1})}
+\hat{L}(\theta|X_k, X_{k+1}) = \frac{1}{M}\sum_{i=1}^M \frac{q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}^i_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}^i_1|\textbf{X}_k)}{p(\textbf{Z}_i)}
 \label{eq: importance sampling likelihood}
 \end{equation}
 
 
-\parencite{durham_numerical_2002} proposes a Brownian bridge between the observations $X_k$ and $X_{k+1}$ for the distribution $q$. This is simulation of a Brownian motion $\gamma B_t$, conditioned on having endpoints $X_k$ and $X_{k+1}$. This can be simulated as a multivariate Gaussian distribution with mean $\mu_l = X_k + l(X_{k+1}-X_k)/L$ and covariance matrix $\Sigma$ with $\Sigma_{ij} = \Sigma_{ji}= \Delta \gamma^2(1-\frac{i}{N+1}) \frac{j}{N+1}$ for $i = 1, \dots , N$ and $j = 1, \dots, i$. N is the number of mesh nodes in between the two endpoints, $\Delta$ is the time difference for the endpoints, and $\gamma^2$ is the diffusion constant which is used in the Langevin likelihood.
+\parencite{durham_numerical_2002} proposes a Brownian bridge between the observations $\textbf{X}_k$ and $\textbf{X}_{k+1}$ for the distribution $p$. This is simulation of a Brownian motion $\gamma \textbf{B}_t$, conditioned on having endpoints $\textbf{X}_k$ and $\textbf{X}_{k+1}$. A Brownian bridge variable $\textbf{B}_l$ can be simulated as a multivariate Gaussian distribution with mean $\bm \mu_l = \textbf{X}_k + l(\textbf{X}_{k+1}-\textbf{X}_k)/N$ and covariance matrix $\bm \Sigma$ with $\bm \Sigma_{ij} = \bm \Sigma_{ji}= \Delta \gamma^2(1-\frac{i}{N+1}) \frac{j}{N+1}$ for $i = 1, \dots , N$ and $j = 1, \dots, i$. Where N is the number of mesh nodes in the bridge . We can write the full log-likelihood as 
 
-\
+
+$$
+\hat{l}(\bm \beta, \gamma^2) = \sum_{i = 1}^K log( \frac{1}{M}\sum_{j=1}^M \frac{1}{P_{ij}}\prod_{k=0}^N \mathcal{N}(B_{ijk+1} ; B_{ijk+1} - \frac{\Delta \gamma^2}{2}, \Delta\gamma^2 I_{2*2}))
+$$
+
+where the first and last elements of the bridges $B_{ij0}$ and $B_{ijN+1}$ are the observed values of the Langevin process $X_i$ and $X_{i+1}$ respectively, and $P_{ij}$ is the density of the j-th bridge between $\textbf{X}_{i+1}$ and $\textbf{X}_i$.
 
 To demonstrate how the Brownian bridge reduces variance we can take two points of the simulated Langevin process which has been thinned. We can then make a number of simulations of both the Langevin process and the Brownian bridge, using the same parameter for the Langevin process speed and the Brownian bridge variance.
 
@@ -124,31 +138,28 @@ To demonstrate how the Brownian bridge reduces variance we can take two points o
     \subfloat[\centering Langevin process simulations]{{\includegraphics[width=\linewidth]{Images/ch3/Langevin process path figure.pdf} }}%
     \qquad
     \subfloat[\centering Brownian bridge simulations]{{\includegraphics[width=\linewidth]{Images/ch3/Brownian bridge path figure.pdf} }}%
-    \caption{Plots of 10 simulations of the Langevin process (a), and 10 simulations of the Brownian bridge (b) in black. The true path of the Langevin process is shown in red.}%
+    \caption[Langevin and Brownian bridge paths]{Plots of 10 simulations of the Langevin process (a), and 10 simulations of the Brownian bridge (b) in black. The true path of the Langevin process is shown in red.}%
     \label{fig:monte carlo paths}%
 \end{figure}
 
 \
 
-Figure~\ref{fig:monte carlo paths} shows one dimension of paths simulated from the Langevin process in (a) and Brownian bridge in (b), plotted against time. The true path of the Langevin process, whose endpoints we are simulating based on, is shown in red. The first figure shows how the final step of the simulated Langevin processes (black), in many cases deviates from the the Langevin process that we are trying to estimate. Since there is high variability in the distance from the last point in $z^i$ to the next observation, This can cause the likelihood estimate to have high variance. The second plot on the other hand shows that the proposed paths do not include large jumps, like the first plot. Because of this, using the brownian bridges as a proposal density, might reduce the variance of the likelihood estimate. judging by the the Langevin Process in red, the Brownian bridges are also plausible transitions of the Langevin process. 
+Figure~\ref{fig:monte carlo paths} shows one dimension of paths simulated from the Langevin process in (a) and Brownian bridge in (b), plotted against time. The true path of the Langevin process, whose endpoints we are simulating based on, is shown in red. The first figure shows how the final step of the simulated Langevin processes (black), in many cases deviates from the the Langevin process that we are trying to estimate. Since there is high variability in the distance from the last point in $\textbf{Z}^i$ to the next observation, This can cause the likelihood estimate to have high variance. The second plot on the other hand shows that the proposed paths do not include large jumps, like the first plot. Because of this, using the brownian bridges as a proposal density, might reduce the variance of the likelihood estimate. judging by the the Langevin Process in red, the Brownian bridges are also plausible transitions of the Langevin process. 
 
 \
 
-using the theory from subsection~\ref{subsec: importance sampling theory}, the density of the variables being integrated with respect to, $f(x)$, is the Euler Maruyama transition probability. the proposal density, $g(x)$, is the Brownian bridge probability, and the function we are integrating over ,$h(x)$, is the probability transitioning in the last step to the endpoints of the Langevin process $p(x_{k+1}|z_N)$. The support of $f$ is the same as the support of $g$, since both the Langevin process and the Brownian bridge can theoretically take on any value for any of the mesh states. When $g$ is small $h$ is also likely to be small, this indicates that the Brownian bridge should reduce the variance. \parencite{durham_numerical_2002}  shows that the importance sampling estimator reduces the root mean square error to the Langevin process, when compared to using the Monte-Carlo estimate.
+using the theory from subsection~\ref{subsec: importance sampling theory}, the density of the variables being integrated with respect to, $f(x)$, is the Euler Maruyama transition probability. the proposal density, $g(x)$, is the Brownian bridge probability, and the function we are integrating over ,$h(x)$, is the probability transitioning in the last step to the endpoints of the Langevin process $q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)$. The support of $f$ is the same as the support of $g$, since both the Langevin process and the Brownian bridge can theoretically take on any value for any of the mesh states. When $g$ is small $h$ is also likely to be small, this indicates that the Brownian bridge should reduce the variance. \parencite{durham_numerical_2002}  shows that the importance sampling estimator reduces the root mean square error to the Langevin process, when compared to using the Monte-Carlo estimate.
 
 
 \subsection{Pre-Computing Brownian Bridges}
 \label{subsec: precomputing brownian bridges}
-Even when using importance sampling, it can take a long time to compute the likelihood. A large portion of the computational complexity of the likelihood, is simulating the Brownian bridges and computing the gradients of the covariates at the points of the bridges. A way to circumvent some of this computation would be to simulate the bridge and computing the gradients before evaluating the likelihood. This might save som time in situations when we are evaluating the likelihood many times, like in numerical optimization. Pre-computing the Brownian bridges would necessitate having a value for the speed parameter beforehand. One way of doing this, is to use the estimate from \parencite{michelot_langevin_2019} for the speed parameter. For large time differences between observation this estimator underestimates the speed. However if the variance used in the proposal has little effect on the likelihood estimate, this could still give the correct parameter estimates. If we simulate M bridges, each with N nodes, and we have K observations, we can express the log-likelihood as 
-
-$$
-\hat{l}(\beta, \gamma^2) = \sum_{i = 1}^K log( \frac{1}{M}\sum_{j=1}^M \frac{1}{P_{ij}}\prod_{k=0}^N \mathcal{N}(B_{ijk+1} ; B_{ijk+1} - \frac{\Delta \gamma^2}{2}, \Delta\gamma^2 I_{2*2}))
-$$
-
-For the sake of compactness of , I let the first and last elements of the bridges $B_{ij0}$ and $B_{ijN+1}$ be the observed values of the Langevin process $X_i$ and $X_{i+1}$ respectively.
+Even when using importance sampling, it can take a long time to compute the likelihood. A large portion of the computational complexity of the likelihood, is simulating the Brownian bridges and computing the gradients of the covariates at the points of the bridges. A way to circumvent some of this computation would be to simulate the bridge and computing the gradients before evaluating the likelihood. This might save som time in situations when we are evaluating the likelihood many times, like in numerical optimization. Pre-computing the Brownian bridges would necessitate having a value for the speed parameter beforehand. One way of doing this, is to use the estimate from \parencite{michelot_langevin_2019} for the speed parameter. For large time differences between observation this estimator underestimates the speed. However if the variance used in the proposal has little effect on the likelihood estimate, this could still give the correct parameter estimates. 
 
 
 
+
+\begin{comment}
+    
 \section{Assessing the Models}
 \label{sec: assessing the models}
  In this chapter three likelihood approximations for the Langevin process likelihood have been explored. Method one being based on the use of the extended Kalman filter. method two approximates the likelihood by using Brownian bridges for importance sampling to integrate over intermediate states between observations. And method three pre-computes these bridges before evaluating the likelihood. To find maximum likelihood estimates for these likelihoods I use the "L-FBGS-B" method as implemented in the R packages "optim" and "optimParalell". For method two and three, I use an analytical gradient which is derived in appendix~\ref{Appendix C}. This gradient assumes that the proposal density remains constant when we take the derivatives. This is true for method three where we are using the same bridge each time we evaluate the likelihood. For method two however, this is not true since the bridges are simulated each time the likelihood is evaluated. I choose to use this gradient for both method 2 and 3 because the importance sampling estimate converges for any proposal distribution, so we can expect the changes in the likelihood approximation to be small, when the change in the variance parameter used in the proposal is small.
@@ -178,6 +189,9 @@ For the third test, 100 tracks were simulated, each containing 5000 observations
 - write about why i use L-BFGS-B
 - have a separate experiment for time takes to do estimates and the variance of the estimators themselves
 - The EKF experiment uses optimparalell
+\end{comment}
+
+
 
 \begin{comment}
 \section{Including Observation Error}

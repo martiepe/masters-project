@@ -10,7 +10,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/discussion/EKF high diffusion path.pdf}
-    \caption[Extended Kalman filter]{Plot of extended Kalman filter state estimates. The black line shows the predicted state estimates over a time grid from 0 to 0.1, with increments 0.01. The dotted elipse shows the 90\% confidence level set of the final predicted state, and the red line show the Langevin process that is beeing estimated. The parameters used are the same for the Langevin process and the EKF}
+    \caption[Extended Kalman filter path]{Plot of extended Kalman filter state estimates. The black line shows the predicted state estimates over a time grid from 0 to 0.1, with increments 0.01. The dotted elipse shows the 90\% confidence level set of the final predicted state, and the red line show the Langevin process that is beeing estimated. The parameters used are the same for the Langevin process and the EKF}
     \label{fig:EKF high diffusion}
 \end{figure}
 
@@ -23,11 +23,11 @@ The extended Kalman filter might work better. Using intermediate predict steps i
 %interpreting Brownian bridge reults
 \subsection{Brownian Bridge Importance Sampling Likelihood}
 \label{subsec: brownian bridge interpretation}
-In scenario 1 in section~\ref{sec: BB test} we saw that the method using the Brownian bridge importance sampling likelihood eliminated the bias observed in the estimates using the Euler-Maruyama method in figure~\ref{fig:EM_thin_boxplot}. This is not surprising, as the importance sampling estimate should converge to the correct value of the likelihood and because the proposal being used is similar to the Langevin process. The test also showed that there were two estimates which overestimated the value of the parameter $\gamma^2$ by a large margin. This might caused by the method which was used to find maximum likelihood. The maximum likelihood was found by using the "L-BFGS-B" method implemented in R optim, and the likelihood function simulated new Brownian bridges each time it was evaluated. This meant that there was stochasticity in the likelihood, which could mean that optimization algorithm found a value of the likelihood that had a high value because of randomness. The estimates that were found were still an improvement on the estimates using the Euler-Maruyama method, but they could perhaps be improved further by simulating standard Gaussian variables $Z$ beforehand, then transforming them by using $\gamma Z +\mu$ to give Brownian bridges scaled with the right speed parameter. The likelihood estimates obtained by doing this would be deterministic, which might reduce the variance of the estimates, and hinder outliers.
+In scenario 1 in section~\ref{sec: BB test} we saw that the method using the Brownian bridge importance sampling likelihood eliminated the bias observed in the estimates using the Euler-Maruyama method in figure~\ref{fig:EM_thin_boxplot}. This is not surprising, as the importance sampling estimate should converge to the correct value of the likelihood and because the proposal being used is similar to the Langevin process. The test also showed that there were two estimates which overestimated the value of the parameter $\gamma^2$ by a large margin. This might caused by the method which was used to find maximum likelihood. The maximum likelihood was found by using the "L-BFGS-B" method implemented in R optim, and the likelihood function simulated new Brownian bridges each time it was evaluated. This meant that there was stochasticity in the likelihood, which could mean that optimization algorithm found a value of the likelihood that had a high value because of randomness. The estimates that were found were still an improvement on the estimates using the Euler-Maruyama method, but they could perhaps be improved further by simulating standard Gaussian variables $\textbf{Z}$ beforehand, then transforming them by using $\gamma \textbf{Z} +\mu$ to give Brownian bridges scaled with the right speed parameter. The likelihood estimates obtained by doing this would be deterministic, which might reduce the variance of the estimates, and hinder outliers.
 
 \
 
-Another observation from scenario 1 is that the variance of the $\beta$-parameters is reduced as the time difference of the observations is increased, when the number of observations is held constant. The same explanation as was used to explain the same phenomenon for the Euler-Maruyama estimates, can be used in this case: that when more of the covariate range is explored, the variance of the coefficient estimates is reduced. Since estimates are unbiased at all values of $dt$, this suggests that If we are given the choice between a higher frequency of observations of an animals movement or a lower frequency, we should prefer the lower frequency, given that they have the same cost to acquire.
+Another observation from scenario 1 is that the variance of the $\bm \beta$-parameters is reduced as the time difference of the observations is increased, when the number of observations is held constant. The same explanation as was used to explain the same phenomenon for the Euler-Maruyama estimates, can be used in this case: that when more of the covariate range is explored, the variance of the coefficient estimates is reduced. Since estimates are unbiased at all values of $dt$, this suggests that If we are given the choice between a higher frequency of observations of an animals movement or a lower frequency, we should prefer the lower frequency, given that they have the same cost to acquire.
 
 \
 
@@ -46,16 +46,15 @@ When $\Delta_t=0.1$ there is bias in the Euler-Maruyama method whose $\gamma^2$-
 
 \
 
-A striking feature of the estimations done in scenario 1, is that even though there is a large bias in the speed parameter $\gamma^2$, there appears to be little or no bias in the estimates of $\beta$. This is particularly interesting, since the drift term in the Langevin process is scaled by $\gamma^2$. This might suggest that the variance used in making the Brownian bridges is not important when it comes to estimating $\beta$, but is more important when it comes to estimating $\gamma^2$.
+A striking feature of the estimations done in scenario 1, is that even though there is a large bias in the speed parameter $\gamma^2$, there appears to be little or no bias in the estimates of $\bm \beta$. This is particularly interesting, since the drift term in the Langevin process is scaled by $\gamma^2$. This might suggest that the variance used in making the Brownian bridges is not important when it comes to estimating $\bm \beta$, but is more important when it comes to estimating $\gamma^2$.
 
 \
 
 
-The simulations done in Scenario 3 showed that for small values of $M$ there were biases in $\beta_1$, $\beta_2$ and $\gamma^2$. These biases disappeared for the larger values of $M$ for $\beta_1$ and $\beta_2$, and was reduced for increasing values of $M$ for $\gamma^2$. This is what we would expect since the importance sampling estimate converges to the true value of the likelihood as $M$ increases. It also suggests that if we let $M$ become large enough, this method could give unbiased estimates. However the method would likely not be more computationally than scaling the bridges each time the likelihood is evaluated because any efficiency gained from pre-computing the bridges would be offset by the amount of bridges that would be needed to be simulated
+The simulations done in Scenario 3 showed that for small values of $M$ there were biases in $\beta_1$, $\beta_2$ and $\gamma^2$. These biases disappeared for the larger values of $M$ for $\beta_1$ and $\beta_2$, and was reduced for increasing values of $M$ for $\gamma^2$. This is what we would expect since the importance sampling estimate converges to the true value of the likelihood as $M$ increases. It also suggests that if we let $M$ become large enough, this method could give unbiased estimates. However the method would likely not be more computationally than scaling the bridges each time the likelihood is evaluated because any efficiency gained from pre-computing the bridges would be offset by the amount of bridges that would be needed to be simulated.
 
 
 
-%what went well, what are constraints
 \section{Limitations and Future Directions}
 The method using Brownian bridge importance sampling showed promising results when it comes to eliminating the bias seen in the Euler-Maruyama method. A problem with using this method however, is that it cannot handle observation error. typically track data is collected with some observation error, for example from getting positions by GPS. If this error is not accounted for, the estimates would no longer be accurate. \parencite{michelot_langevin_2019} circumvents this problem by using the Kalman Filter to find predicted positions that are then used to estimate the parameters. Another possibility is that, when the distance between observations becomes large, the effect of the observation error on parameter estimates becomes less significant. This is something that would need to be studied further though. Alternatively, appendix~\ref{Appendix: Langevin with obs error} contains a derivation of a likelihood estimator for the Langevin process with normally distributed observation error. I have not made this estimator work in practice, which is why it is not in the main section of this thesis.
 
@@ -73,20 +72,13 @@ In this thesis i have not explored how to choose the number of bridge nodes $N$ 
 
 \
 
-Often animal movement can be time dependent. For example an animals utilization distribution could change seasonally. The Langevin model does not support time-varying covariates, so this is something that would be unfeasible to model using it. It is however possible to use a time varying speed parameter $\gamma^2$. Changes in animal movement which occur on shorter time scales, and which do not affect the utilization distribution could therefore be modeled. The variance of the speed parameter is not reduced for lower frequency sampling. A future 
+Often animal movement can be time dependent. For example an animals utilization distribution could change seasonally. The Langevin model does not support time-varying covariates, so this is something that would be unfeasible to model using it. It is however possible to use a time varying speed parameter $\gamma^2$. Changes in animal movement which occur on shorter time scales, and which do not affect the utilization distribution could therefore be modeled. The variance of the speed parameter is not reduced for lower frequency sampling. future research could therefor include what the effect of low frequency sampling is on the ability to model the speed.
 
+\
 
+Another topic that was not explored in tghis thesis is which proposal to use in importance sampling. In addtion to using Brownian bridges as a proposal, they also use what they call a "modified Brownian bridge" which has a variance that decreases as the bridge goes from the start to the endpoint. They show that this works better than Brownian bridges. There might also be other improvements that can be made, like using other forms of interpolation that linear interpolation for the mean of the bridges. 
 
+\
 
-
-These methods might not work as well in a setting where the drift dominates, since the path might go in curves which is hard for the brownian bridges to simulate. Though, in cases where the drift dominates, it is usually easier to estimate the parameters.
-
-
-adding curvature to the brownian bridges could maybe improve the model
-
-
-
-
-An animal movement model that allows for point process integration can be done much more easily using the metropolis hastings algorithm
-
-i could have tested the EKF for more values
+using monte carlo integration of SSA might be better than metropolis hasting correction because ... There is information between the observations ... 
+the langevin model is a very simple model for animal movement and may not be able to model direction persistance correctly

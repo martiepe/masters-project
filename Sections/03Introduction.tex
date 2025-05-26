@@ -1,17 +1,24 @@
 
-% The subsections written are only suggestions, to display how sections and subsections may look for your thesis
+A common problem in ecology is that of finding the home range of an animal. The home range was described by \parencite{burt1943territoriality} as "\dots that area traversed by the individual in its normal activities of food gathering, mating, and caring for young." This concept is formalized in statistics as the utilization distribution, which \parencite{anderson1982home} defines as "the probability density function that gives the probability of finding an animal at a particular location". There exist many methods for estimating the utilization distribution of an animal, such as estimating it using occurrence data. In movement ecology, the utilization distribution is estimated using the movement of an animal in the form of track data. Many methods for modeling animal movement have been proposed; a model that is commonly used is the step selection analysis. In this thesis i focus on the Langevin movement model proposed in \parencite{michelot_langevin_2019}. This model uses the Langevin process to model 
 
-A common problem in ecology is finding the habitat preferences of a species. This is the tendency of an animal to prefer one area to another. mathematically, habitat preferences are described by the utilization distribution. this is defined as the probability of finding the animal in a particular area. various methods exist for estimating the utilization distribution. One such method is described in \cite{michelot_langevin_2019}. In this paper, the authors approximate a model of animal movement based on the Langevin diffusion equation, using animal tracking data. they then find the utilization distribution by finding the stationary distribution of the animal movement process. This method uses tracking data from animals to approximate the diffusion process. 
+\
 
-Covariates can be included in the utilization distribution by using a resource selection function. This allows for inference and interpretation to be made about the animals. In this way the habitat of the animals can be related to geographical 
+A problem that \parencite{michelot_langevin_2019} observes is that for low-frequency sampling of animal movement, there is a bias in the parameters estimated by the Langevin movement model. This occurs because the discretization of the Langevin process used to model data is an approximate likelihood which does not take into account the movement that might have occurred between observations. 
 
-\section{Motivation}
+\
+
+This thesis explores three methods for dealing with the bias observed in \parencite{michelot_langevin_2019}. The first of these uses the extended Kalman filter, iterated to find predictions for the states of the process between observations, and a resulting likelihood approximation based on these predictions. The second method adds a grid of hidden states between observations. The transition densities between these hidden states are better approximations for the Langevin process, since they have shorter time intervals between them. An approximation for the Langevin likelihood is found by expressing the joint density of the observations and hidden states, and using the Monte-Carlo method to integrate out the hidden states. To improve the speed of this method, importance sampling is used. The third method uses the same concept as the second method, but instead of simulating proposals each time the likelihood is evaluated, an approximate proposal is simulated and used each time the likelihood is evaluated. 
+
+\
+
+Of the methods described, the method that uses importance sampling to integrate over hidden states manages to reduce the bias seen in \parencite{michelot_langevin_2019}. This means that the Langevin movement model can be applied to cases where we have observations of animal movement sampled at a low frequency. In addition, when the observations have longer time intervals between them, there is a reduction in the variance of the estimated parameters of the utilization distribution. This means that an animal's utilization distribution can be better estimated if its position is gathered at lower frequencies.
 
 
 
-\section{Project description}
 
 
 
-\subsection{Stakeholders}
+
+
+
 
