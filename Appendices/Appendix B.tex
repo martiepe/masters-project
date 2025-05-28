@@ -5,41 +5,41 @@ The estimates found using the method in subsection~\ref{subsec: importance sampl
 
 \
 
-I will assume that the observation errors $\epsilon_k$ are i.i.d Gaussian distributed, with zero mean and covariance $r^2 I_{2*2}$. The process of observing the Langevin process can be expressed as a hidden variable model, where we have observations $Y_k$ and the hidden process $X_k$ for $k=1,\dots,K$. Because all the information about the observations $Y_k$ is held in the hidden variable $X_k$  and all the informating about $X_k$ is held in $X_{k-1}$ we can write
+I will assume that the observation errors $\epsilon_k$ are i.i.d Gaussian distributed, with zero mean and covariance $r^2 I_{2*2}$. The process of observing the Langevin process can be expressed as a hidden variable model, where we have observations $\textbf{Y}_k$ and the hidden process $\textbf{X}_k$ for $k=1,\dots,K$. Because all the information about the observations $\textbf{Y}_k$ is held in the hidden variable $\textbf{X}_k$  and all the informating about $\textbf{X}_k$ is held in $\textbf{X}_{k-1}$ we can write
 $$
-p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(Y_{K}|X_{K})p(X_k, Y_{K-1},X_{K-1},\dots) =p(Y_{K}|X_{K})p(X_k | X_{K-1},)p(Y_{K-1},X_{K-1},\dots)
+p(\textbf{Y}_{K}, \textbf{X}_{K}, \textbf{Y}_{K-1} ,\textbf{X}_{K-1} , \dots \textbf{Y}_1, \textbf{X}_1) = p(\textbf{Y}_{K}|\textbf{X}_{K})p(\textbf{X}_k, \textbf{Y}_{K-1},\textbf{X}_{K-1},\dots) =p(\textbf{Y}_{K}|\textbf{X}_{K})p(\textbf{X}_k | \textbf{X}_{K-1},)p(\textbf{Y}_{K-1},\textbf{X}_{K-1},\dots)
 $$
 
 this leads to
 
 $$
-p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(Y_{K}|X_{K})p(X_k | X_{K-1},)p(Y_{K-1},X_{K-1},\dots)
+p(\textbf{Y}_{K}, \textbf{X}_{K}, \textbf{Y}_{K-1} ,\textbf{X}_{K-1} , \dots \textbf{Y}_1, \textbf{X}_1) = p(\textbf{Y}_{K}|\textbf{X}_{K})p(\textbf{X}_k | \textbf{X}_{K-1},)p(\textbf{Y}_{K-1},\textbf{X}_{K-1},\dots)
 $$
 
 
 These steps can be replicated to get 
 
 $$
-p(Y_{K}, X_{K}, Y_{K-1} ,X_{K-1} , \dots Y_1, X_1) = p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p_{\Delta_k}(X_k|X_{k-1})
+p(\textbf{Y}_{K}, \textbf{X}_{K}, \textbf{Y}_{K-1} ,\textbf{X}_{K-1} , \dots \textbf{Y}_1, \textbf{X}_1) = p(\textbf{X}_1)p(\textbf{Y}_1|\textbf{X}_1)\prod_{k=2}^K p(\textbf{Y}_k |\textbf{X}_k)p_{\Delta_k}(\textbf{X}_k|\textbf{X}_{k-1})
 $$
 
 We can find the density of the observations by integrating over the hidden variables
 
 $$
-p(Y_K, \dots Y_1) = \int \dots \int  p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p_{\Delta_k}(X_k|X_{k-1}) dX_1 \dots dX_k
+p(\textbf{Y}_K, \dots \textbf{Y}_1) = \int \dots \int  p(\textbf{X}_1)p(\textbf{Y}_1|\textbf{X}_1)\prod_{k=2}^K p(\textbf{Y}_k |\textbf{X}_k)p_{\Delta_k}(\textbf{X}_k|\textbf{X}_{k-1}) d\textbf{X}_1 \dots d\textbf{X}_k
 $$
 
 
-The Euler Maruyama transition density $p_{\Delta_k}(X_{k+1}|X_k)$ is inaccurate for large values of $\Delta$, as has been discussed in earlier sections. To correct for this we can do as in section subsection~\ref{subsec: Monte-Carlo Estimation}, and add a series of intermediate hidden variable $\textbf{Z}_k = (Z_{k1}, \dots Z_{kN})$ between $X_k$ and $X_{k+1}$. 
+The Euler Maruyama transition density $p_{\Delta_k}(\textbf{X}_{k+1}|\textbf{X}_k)$ is inaccurate for large values of $\Delta$, as has been discussed in earlier sections. To correct for this we can do as in section subsection~\ref{subsec: Monte-Carlo Estimation}, and add a series of intermediate hidden variable $\textbf{Z}_k = (Z_{k1}, \dots Z_{kN})$ between $\textbf{X}_k$ and $\textbf{X}_{k+1}$. 
 
 $$
-p(Y_K,\dots Y_1) = \int \dots \int  p(X_1)p(Y_1|X_1)\prod_{k=2}^K p(Y_k |X_k)p(X_k| \textbf{Z}_k)p(\textbf{Z}_k |X_{k-1}) dX_1d\textbf{Z}_1 \dots d\textbf{Z}_{K-1} dX_K 
+p(\textbf{Y}_K,\dots \textbf{Y}_1) = \int \dots \int  p(\textbf{X}_1)p(\textbf{Y}_1|\textbf{X}_1)\prod_{k=2}^K p(\textbf{Y}_k |\textbf{X}_k)p(\textbf{X}_k| \textbf{Z}_k)p(\textbf{Z}_k |\textbf{X}_{k-1}) d\textbf{X}_1d\textbf{Z}_1 \dots d\textbf{Z}_{K-1} d\textbf{X}_K 
 $$
 
 From here we can use the importance sampling estimator used in subsection~\ref{subsec: importance sampling}, but instead of using Brownian bridges between observations, we use Brownian bridges between simulated observation error around the observed locations. These points are simulated according to the observation model, which in our case is a normal distribution with zero mean and variance $r^2$. The proposal observation error cancels out with the observation error of the process, since they are symmetric, so we get the estimator
 
 $$
-\hat{l}(\beta, \gamma^2, r^2) =\frac{1}{M} \sum_{i = 1}^M  \frac{p(X_1)\prod_{k=2}^K p(X_k| \textbf{Z}_k^i)p(\textbf{Z}_k^i |X_{k-1})}{q(\textbf{Z}^i|\textbf{X}^i) q(\textbf{X}^i)}
+\hat{l}(\beta, \gamma^2, r^2) =\frac{1}{M} \sum_{i = 1}^M  \frac{p(\textbf{X}_1)\prod_{k=2}^K p(\textbf{X}_k| \textbf{Z}_k^i)p(\textbf{Z}_k^i |\textbf{X}_{k-1})}{q(\textbf{Z}^i|\textbf{X}^i) q(\textbf{X}^i)}
 $$
 
 where $$
@@ -50,16 +50,16 @@ where $$
 We want to find the distribution of the transistions for the discretization of the underdamped Langevin process. The discretization defines the transitions as 
 
 $$
-\begin{array}{lcl} V_t & = & V_0 e^{-\gamma t}-\sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(X_0))ds) + \sqrt{2\gamma}\sigma \int_0^t e^{-\gamma(t-s)} dB_s \\
-X_t & = & X_0 + \int_0^t V_s ds \end{array}
+\begin{array}{lcl} V_t & = & V_0 e^{-\gamma t}-\sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(\textbf{X}_0))ds) + \sqrt{2\gamma}\sigma \int_0^t e^{-\gamma(t-s)} dB_s \\
+\textbf{X}_t & = & \textbf{X}_0 + \int_0^t V_s ds \end{array}
 $$
 
-A stochastic process of the form $X = X_0 + \mu + \int_0^tf(s)dB_s$ us called an Itô process. This process has a Gaussain distribution, with mean $\mu$ and variance $\int_0^tf(s)^2ds$\cite{iacus_simulation_2008}. the expression for $\tilde{v_t}$ matches that of an Itô process . The distribution of the transitions is then Gaussian. Furthermore, it's expectation is then
+A stochastic process of the form $X = \textbf{X}_0 + \mu + \int_0^tf(s)dB_s$ us called an Itô process. This process has a Gaussain distribution, with mean $\mu$ and variance $\int_0^tf(s)^2ds$\cite{iacus_simulation_2008}. the expression for $\tilde{v_t}$ matches that of an Itô process . The distribution of the transitions is then Gaussian. Furthermore, it's expectation is then
 
 $$
 \begin{array}{lcl}
-     E[\tilde{v_t}] & = & \tilde{v_0} e^{-\gamma t} - \sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(\tilde{x_0}))ds) & \\
-     & = & \tilde{v_0} e^{-\gamma t} - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{x_0})) (1-e^{-\gamma t})
+     E[\tilde{v_t}] & = & \tilde{v_0} e^{-\gamma t} - \sigma^2(\int_0^t e^{-\gamma(t-s)}\nabla log(f(\tilde{\textbf{X}_0}))ds) & \\
+     & = & \tilde{v_0} e^{-\gamma t} - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{\textbf{X}_0})) (1-e^{-\gamma t})
 \end{array}
 $$
 The Brownian motion term is the only stochastic term in $\tilde{v_t}$ so we can say that its variance is
@@ -71,35 +71,35 @@ $$
 \end{array}
 $$
 
-We can also infer that $\tilde{x_t}$ must be an Itô process by looking at its Browninan motion term
+We can also infer that $\tilde{\textbf{X}_t}$ must be an Itô process by looking at its Browninan motion term
 
 $$
 \sqrt{2\gamma}\sigma \int_0^t \int_0^r e^{-\gamma (r-s)}dB_sdr = \sqrt{2\gamma}\sigma \int_0^te^{\gamma s} \int_s^t e^{-\gamma r}drdB_s =  \frac{\sqrt{2}}{\sqrt{\gamma}} \sigma \int_0^t(1-e^{-\gamma(t-s)})dB_s
 $$
 
-The mean of $\tilde{x_t}$ is then 
+The mean of $\tilde{\textbf{X}_t}$ is then 
  
 $$
 \begin{array}{lcl}
-E[\tilde{x_t}] & = & E[\tilde{x_0} + \int_0^t \tilde{v_s} ds] \\ & = & \tilde{x_0} + \int_0^t E[\tilde{v_s}] ds \\
-& = & \tilde{x_0} + \frac{\tilde{v_0}}{\gamma}(1-e^{-\gamma t}) - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{x_0}))(t + \frac{1-e^{-\gamma t}}{\gamma})
+E[\tilde{\textbf{X}_t}] & = & E[\tilde{\textbf{X}_0} + \int_0^t \tilde{v_s} ds] \\ & = & \tilde{\textbf{X}_0} + \int_0^t E[\tilde{v_s}] ds \\
+& = & \tilde{\textbf{X}_0} + \frac{\tilde{v_0}}{\gamma}(1-e^{-\gamma t}) - \frac{\sigma^2}{\gamma} \nabla log(f(\tilde{\textbf{X}_0}))(t + \frac{1-e^{-\gamma t}}{\gamma})
 \end{array}
 $$
 
-And the variance of $\tilde{x_t}$ is 
+And the variance of $\tilde{\textbf{X}_t}$ is 
 
 $$
 \begin{array}{lcl}
-Cov(\tilde{x_t}) & = & \frac{2\sigma^2}{\gamma}\int_0^t(\int_0^se^{-\gamma(t-r)})^2dr \ ds \ I_{2*2} \\
+Cov(\tilde{\textbf{X}_t}) & = & \frac{2\sigma^2}{\gamma}\int_0^t(\int_0^se^{-\gamma(t-r)})^2dr \ ds \ I_{2*2} \\
 & = & \frac{2\sigma^2}{\gamma}(t+ \frac{2}{\gamma}e^{-\gamma t} + \frac{1}{2\gamma}e^{-2\gamma t} - \frac{3}{2\gamma})I_{2*2}
 \end{array}
 $$
 
-The covariance matrix between $\tilde{x_t}$ and $\tilde{v_t}$ is 
+The covariance matrix between $\tilde{\textbf{X}_t}$ and $\tilde{v_t}$ is 
 
 $$
 \begin{array}{lcl}
-    Cov(\tilde{x_t}, \tilde{v_t}) & = & (\tilde{x_t}-E[\tilde{x_t}])(\tilde{v_t}-E[\tilde{v_t}])^T \\
+    Cov(\tilde{\textbf{X}_t}, \tilde{v_t}) & = & (\tilde{\textbf{X}_t}-E[\tilde{\textbf{X}_t}])(\tilde{v_t}-E[\tilde{v_t}])^T \\
     &=& E[(\frac{\sqrt{2}}{\sqrt{\gamma}}\sigma \int_0^t(1-e^{-\gamma(t-s)})dB_s)(\sqrt{2 \gamma}\sigma \int_0^te^{-\gamma (t-s)}dB_s)^T] \\
     &=& 2 \sigma^2\int_0^t(1-e^{-\gamma(t-s)})e^{-\gamma(t-s)}ds \ I_{2*2} \\
     &=& \frac{\sigma^2}{\gamma}(1-2e^{-\gamma t} + e^{-2\gamma t})I_{2*2}

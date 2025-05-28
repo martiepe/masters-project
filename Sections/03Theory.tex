@@ -47,7 +47,7 @@ Often there is no analytical solution available for SDEs. In these cases, the di
     d\textbf{X}_t = \mu(t, \textbf{X}_t)dt + \sigma(t, \textbf{X}_t)d\textbf{B}_t
 \end{equation}
 
-Here $\textbf{B}_t$ is the standard d-dimensional Brownian motion. For such equations, it defines a continuous approximate solution $Y(t)$ on a discretized time interval $0=t_0 < t_1 < \dots < t_N = T$. At the discretization points, the approximation is given by
+Where $\textbf{B}_t$ is the standard d-dimensional Brownian motion. For such equations, it defines a continuous approximate solution $Y(t)$ on a discretized time interval $0=t_0 < t_1 < \dots < t_N = T$. At the discretization points, the approximation is given by
 
 \begin{equation}
     \textbf{X}_{i+1} = \textbf{X}_i + \mu(t_i, \textbf{X}_i)(t_{i+1} - t_i) + \sigma(t_i, \textbf{X}_i)(\textbf{B}_{i+1} - \textbf{B}_i)
@@ -232,8 +232,7 @@ using the state and covariance estimates, we get the likelihood
 
 $$L = \prod_{k=0}^n \mathcal{N}(\textbf{Z}_k; h(\hat{\textbf{X}}_{k|k-1}), \textbf{S}_k) \label{eq: EKF likelihood}$$
 
-Where $n$ is the number of observations.
-\parencite{kulikov_extended_2024}
+Where $n$ is the number of observations.\parencite{kulikov_extended_2024}
 
 \begin{comment}
 
@@ -315,7 +314,7 @@ Often, the variance of the estimator \eqref{eq: monte carlo estimator} can be la
     \hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i)\frac{f(X_i)}{g(X_i)}
 \end{equation}
 
-For this estimator to work, it is important that the support of $g$ be equal to the support of $f$. Additionally, if we want the estimator to reduce variability, $\frac{f(x)}{g(x)}$ should be bounded and $g$ should have heavier tails than $f$. Otherwise, a draw from $g$ with low probability, but high probability for $f$ would give a large $\frac{f(x)}{g(x)}$ which would make that sample dominate the estimate. This in turn would give an increased variance to the importance sampling estimator. Ideally, then, we want $\frac{f(x)}{g(x)}$ to be large only when $h(x)$ is small. \parencite{givens2013computational}
+For this estimator to work, it is important that the support of $g$ be equal to the support of $f$. Furthermore, if we want the estimator to reduce variability, $\frac{f(x)}{g(x)}$ should be bounded and $g$ should have heavier tails than $f$. Otherwise, a draw from $g$ with low probability, but high probability for $f$ would give a large $\frac{f(x)}{g(x)}$ which would make that sample dominate the estimate. This in turn would give an increased variance to the importance sampling estimator. Ideally, then, we want $\frac{f(x)}{g(x)}$ to be large only when $h(x)$ is small. \parencite{givens2013computational}
 
 
 
