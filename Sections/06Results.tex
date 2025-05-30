@@ -1,25 +1,25 @@
 
 
 
-In this chapter I study the three methods for approximating the Langevin likelihood presented in chapter~\ref{chap: methods} by using simulations of the Langevin process. Throughout this chapter I will be simulating from the Langevin using the Euler-Maruyama method with the Perlin noise covariates presented in figure~\ref{fig:covariate plots} and a time resolution of $\Delta_t =0.01$.
+In this chapter I study the three methods for approximating the Langevin likelihood presented in chapter~\ref{chap: methods} by using simulations of the Langevin process. Throughout this chapter I will be simulating from the Langevin using the EM method with the Perlin noise covariates presented in figure~\ref{fig:covariate plots} and a time resolution of $\Delta_t =0.01$.
 
 
 
 
 \section{Extended Kalman Filter}
 \label{sec: EKF test}
-To test the likelihood approximation using the extended Kalman filter, 100 tracks were simulated, each with 5000 observations with a resolution of $\Delta t = 0.1$. For each track, the parameters $\gamma^2$ and $\bm \beta$ were estimated using both the EKF likelihood and the estimator described in Section~\ref{sec: estimating parameters}. The number of steps used in the extended Kalman filter was 10. From these estimates box-plots were made, comparing the two methods for each of the parameters. The code used to implement this experiment can be found in the github repository in Appendix~\ref{Appendix: github repo}. The results are shown in figure~\ref{fig:EKF_thin_boxplot}.
+To test the likelihood approximation using the EKF, 100 tracks were simulated, each with 5000 observations with a resolution of $\Delta t = 0.1$. For each track, the parameters $\gamma^2$ and $\bm \beta$ were estimated using both the EKF likelihood and the estimator described in Section~\ref{sec: estimating parameters}. The number of steps used in the EKF was 10. From these estimates box-plots were made, comparing the two methods for each of the parameters. The code used to implement this experiment can be found in the github repository in Appendix~\ref{Appendix: github repo}. The results are shown in figure~\ref{fig:EKF_thin_boxplot}.
 
  
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/EM EKF plot.pdf}
-    \caption[Euler-Maruyama and extended Kalman filter estimates]{Box plots of estimated parameters for 100 tracks with 5000 observation using the Euler-Maruyama method (left) and the extended Kalman filter (right). The red line indicates the true value of the parameter.}
+    \caption[EM and EKF estimates]{Box plots of estimated parameters using the EM method and the EKF on 100 Langevin tracks simulated at a resolution of $0.01$ and thinned to $\Delta_t=0.1$ and shortened to 5000 observation. 10 predict steps were done for the EKF. Red line indicates the true value of the parameter.}
     \label{fig:EKF_thin_boxplot}
 \end{figure}
 
-Figure~\ref{fig:EM_thin_boxplot} shows that there is little or no improvement in the estimates from using the extended Kalman filter. for the $\bm \beta$ parameters, the mean estimated parameter is further from the true value of the parameter than the mean of the estimates using the Euler-Maruyama method. However, for the estimates of $\gamma^2$, the mean of the estimates using the extended Kalman filter is slightly closer to the true value of the parameter than the mean of the estimates using the Euler Maruyama method. Overall, there is an observable bias in the estimates using both these methods in all of the parameters.
+The code for generating Figure~\ref{fig:EKF_thin_boxplot} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "EM EKF figure.R". Figure~\ref{fig:EM_thin_boxplot} shows that there is little or no improvement in the estimates from using the EKF. for the $\bm \beta$ parameters, the mean estimated parameter is further from the true value of the parameter than the mean of the estimates using the EM method. However, for the estimates of $\gamma^2$, the mean of the estimates using the EKF is slightly closer to the true value of the parameter than the mean of the estimates using the Euler Maruyama method. Overall, there is an observable bias in the estimates using both these methods in all of the parameters.
 
 \section{Brownian Bridge Importance Sampling Likelihood}
 \label{sec: BB test}
@@ -35,11 +35,11 @@ To study the effect of the time difference between observations, $\Delta_t$, on 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying dt plot brownian bridge likelihood.pdf}
-    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling at different sampling intervals]{Box plots of estimated parameters using the Brownian bridge importance sampling likelihood on 100 simulated tracks with 5000 observations for each of the observation intervals $\Delta_t \in \{0.1, \ 0.5, \ 1\}$. The Langevin process was simulated from using a resolution of $0.01$ and the covariates used were the ones described in Figure~\ref{fig:covariate plots}. The estimates were found using $M=50$ bridges and $N = thin -1$, where $thin$ is the factor of thinning used to achieve the sample interval $\Delta_t$. The red line indicates the actual value of the parameter.}
+    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling at different sampling intervals]{Box plots of estimated parameters using the Brownian bridge importance sampling likelihood on 100 Langevin tracks thinned to $\Delta_t \in \{0.1, \ 0.5, \ 1\}$ and shortened to 5000 observations. The estimates were found using $M=50$ bridges and $N = \Delta_t/0.01 -1$. Red line indicates the true value of the parameter.}
     \label{fig:varying dt boxplot BB}
 \end{figure}
 
-There is no observable bias for any of the parameter estimates in figure~\ref{fig:varying dt boxplot BB}. This is in contrast to what is observed in the EM-estimates in Figure~\ref{fig:EM_thin_boxplot}, where there is an increasing bias as the time difference between observations increases. For $\gamma^2$, when we have $\Delta_t=1$, there are two outliers among the estimates that have overestimated the parameter to a large extent. 
+The code for generating Figure~\ref{fig:varying dt boxplot BB} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying dt Brownian bridge estimates.R". There is no observable bias for any of the parameter estimates in figure~\ref{fig:varying dt boxplot BB}. This is in contrast to what is observed in the EM-estimates in Figure~\ref{fig:EM_thin_boxplot}, where there is an increasing bias as the time difference between observations increases. For $\gamma^2$, when we have $\Delta_t=1$, there are two outliers among the estimates that have overestimated the parameter to a large extent. 
 
 The same pattern as was observed in figure~\ref{fig:EM_thin_boxplot}, where the variance of the parameter estimates of $\bm \beta$ is reduced as $\Delta_t$ increases, is also observed in figure~\ref{fig:varying dt boxplot BB}. For $\gamma^2$, there is a slight increase in the variance of the estimates as $\Delta_t$ increases, which is also the same as what was observed in figure~\ref{fig:EM_thin_boxplot}.
 
@@ -48,18 +48,16 @@ The same pattern as was observed in figure~\ref{fig:EM_thin_boxplot}, where the 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying dt estimates precomputed BB.pdf}
-    \caption[Box plots of Parameter Estimates using pre-computed Brownian bridge importance sampling at different sampling intervals]{Box plots of estimated parameters using the pre-computed Brownian bridge importance sampling likelihood on 100 simulated tracks with 5000 observations for each of the observation intervals $\Delta_t \in \{0.1, \ 0.5, \ 1\}$. The red line indicates the actual value of the parameter.}
+    \caption[Box plots of Parameter Estimates using precomputed Brownian bridge importance sampling at different sampling intervals]{Box plots of estimated parameters using the precomputed Brownian bridge importance sampling likelihood on 100 Langevin tracks thinned to $\Delta_t \in \{0.1, \ 0.5, \ 1\}$ and shortened to 5000 observations. The estimates were found using $M=50$ bridges and $N = \Delta_t/0.01 -1$. Red line indicates the true value of the parameter.}
     \label{fig:varying dt boxplot precomputed BB}
 \end{figure}
 
 
-From Figure~\ref{fig:varying dt boxplot precomputed BB} we can see that the estimates of the simulated tracks using the precomputed Brownian bridge importance sampling likelihood showed no bias in any of the $\bm \beta$ parameters, which is in contrast to the results using the Euler-Maruyama method, where there was bias in the estimates for all the values of $\Delta_t$ used in Figure~\ref{fig:varying dt boxplot precomputed BB}. An observation consistent with that of the Euler-Maruyama estimates is that the variance of the $\bm \beta$ estimates is reduced as the time difference between observation $\Delta_t$ increases. 
-
-\
-
-In addition, there is a bias in the $\gamma^2$-estimates, which is also something seen in the Euler-Maruyama estimates. The estimates using precomputed Brownian bridge importance sampling likelihood do, however, have a smaller bias than is observed for the Euler-Maruyama method in figure~\ref{fig:EM_thin_boxplot}. For $\Delta_t=0.1$, there is little to no bias, whereas for the Euler-Maruyama method, there is observable bias in $\gamma^2$ for this value of $\Delta_t$. The variance of the $\gamma^2$ estimates is stable or slightly increasing with $\Delta_t$, which is also observed for the Euler-Maruyama method.
+The code for generating Figure~\ref{fig:varying dt boxplot precomputed BB} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying dt precomputed Brownian bridge estimates.R". From Figure~\ref{fig:varying dt boxplot precomputed BB} we can see that the estimates of the simulated tracks using the precomputed Brownian bridge importance sampling likelihood showed no bias in any of the $\bm \beta$ parameters, which is in contrast to the results using the EM method, where there was bias in the estimates for all the values of $\Delta_t$ used in Figure~\ref{fig:varying dt boxplot precomputed BB}. An observation consistent with that of the EM estimates is that the variance of the $\bm \beta$ estimates is reduced as the time difference between observation $\Delta_t$ increases. 
 
 
+
+In addition, there is a bias in the $\gamma^2$-estimates, which is also something seen in the EM estimates. The estimates using precomputed Brownian bridge importance sampling likelihood do, however, have a smaller bias than is observed for the EM method in figure~\ref{fig:EM_thin_boxplot}. For $\Delta_t=0.1$, there is little to no bias, whereas for the EM method, there is observable bias in $\gamma^2$ for this value of $\Delta_t$. The variance of the $\gamma^2$ estimates is stable or slightly increasing with $\Delta_t$, which is also observed for the EM method.
 
 
 \subsection{Scenario 2}
@@ -69,20 +67,20 @@ To test the effect of the number of bridge nodes on the estimates, 100 tracks we
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying N estimates BB.pdf}
-    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling using different number of bridge nodes]{Box plots of estimated parameters using the Brownian bridge importance sampling likelihood on 100 simulated tracks with 5000 observations using numbers of bridges $\N \in \{4 , \ 9, \ 49, \ 99\}$. The red line indicates the actual value of the parameter.}
+    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling using different number of bridge nodes]{Box plots of estimated parameters using the Brownian bridge importance sampling likelihood on 100 Langevin tracks simulated at a resolution of $0.01$, thinned to $\Delta_t = 1$ and shortened to 5000 observations. The estimates were found using $M=50$ for each of $N \in \{4 , \ 9, \ 49, \ 99\}$. Red line indicates the true value of the parameter.}
     \label{fig: varying N boxplots brownian bridge}
 \end{figure}
 
-Figure~\ref{fig: varying N boxplots brownian bridge} shows that as the number of bridge nodes decreases, there is an increase in the bias of the estimates. For the $\bm \beta$ parameters, this bias is in the direction away from zero, while for $\gamma^2$ this bias is in the direction of zero. The figure also shows that for $N=99$ and $N=49$ there is little to no bias observed in the estimates. $N = 49$ gives the same resolution for the Brownian bridges as the Langevin simulations, and $N=49$ gives half the resolution for the Brownian bridges as the Langevin simulations.
+The code for generating Figure~\ref{fig:varying N boxplot BB} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying N Brownian bridge estimates.R". Figure~\ref{fig: varying N boxplots brownian bridge} shows that as the number of bridge nodes decreases, there is an increase in the bias of the estimates. For the $\bm \beta$ parameters, this bias is in the direction away from zero, while for $\gamma^2$ this bias is in the direction of zero. The figure also shows that for $N=99$ and $N=49$ there is little to no bias observed in the estimates. $N = 49$ gives the same resolution for the Brownian bridges as the Langevin simulations, and $N=49$ gives half the resolution for the Brownian bridges as the Langevin simulations.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying N estimates precomputed BB.pdf}
-    \caption[Box plots of Parameter Estimates using pre-computed Brownian bridge importance sampling using different numbers of bridge nodes]{box plots showing how the parameter estimates using the importance sampling estimator, with pre-computed Brownian bridges is affected by how many nodes N are used in the Brownian bridges. The red dotted lines show the true values of the parameters.}
+    \caption[Box plots of Parameter Estimates using precomputed Brownian bridge importance sampling using different numbers of bridge nodes]{Box plots of estimated parameters using the precomputed Brownian bridge importance sampling likelihood on 100 Langevin tracks simulated at a resolution of $0.01$, thinned to $\Delta_t = 1$ and shortened to 5000 observations. The estimates were found using $M=50$ for each of $N \in \{4 , \ 9, \ 49, \ 99\}$. Red line indicates the true value of the parameter.}
     \label{fig: varying N boxplots precomputed brownian bridge}
 \end{figure}
 
-Figure~\ref{fig: varying N boxplots precomputed brownian bridge} shows that for $N=99$ and $N=49$ there is no observable bias in the estimates of $\bm \beta$. However, as the number of nodes in the bridges decreases however, there is an increasing bias observed for $\beta_1$ and $\beta_2$. This bias is in the direction away from zero, which is the opposite direction of the bias we observe for the EM method when there are large distances between observations. For $\gamma^2$ there is a bias for all values of $N$ tested, which is consistent with what was experienced for this value of $\Delta_t$ in figure~\ref{fig:varying thin boxplot precomputed BB}. Unlike what was experienced with $\bm \beta$, the bias in the $\gamma$ estimates is reduced as the number of bridge nodes decreases.
+The code for generating Figure~\ref{fig: varying N boxplots precomputed brownian bridge} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying N precomputed Brownian bridge estimates.R". Figure~\ref{fig: varying N boxplots precomputed brownian bridge} shows that for $N=99$ and $N=49$ there is no observable bias in the estimates of $\bm \beta$. However, as the number of nodes in the bridges decreases however, there is an increasing bias observed for $\beta_1$ and $\beta_2$. This bias is in the direction away from zero, which is the opposite direction of the bias we observe for the EM method when there are large distances between observations. For $\gamma^2$ there is a bias for all values of $N$ tested, which is consistent with what was experienced for this value of $\Delta_t$ in figure~\ref{fig:varying thin boxplot precomputed BB}. Unlike what was experienced with $\bm \beta$, the bias in the $\gamma$ estimates is reduced as the number of bridge nodes decreases.
 
 \subsection{Scenario 3}
 To study the effect of the number of bridges $M$ on the estimates using the importance sampling likelihood with precomputed Brownian bridges, 100 tracks were simulated from the Langevin process, having 5000 observations and $\Delta_t = 1$. Each track was estimated using the likelihood approximations with numbers of bridges $M=\{5,10,50,100,200\}$ and $N=49$ bridge nodes. The resulting estimates using the Brownian bridge importance sampling likelihood are displayed in Figure~\ref{fig:varying M boxplots brownian bridge}, and the results using precomputed Brownian bridges are shown in figure~\ref{fig:varying M boxplots precomputed brownian bridge}
@@ -91,22 +89,22 @@ To study the effect of the number of bridges $M$ on the estimates using the impo
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying M estimates boxplot BB.pdf}
-    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling using different numbers of bridges]{box plots showing how the parameter estimates using the importance sampling estimator is affected by how many bridges M are used. The red dotted lines show the true values of the parameters.}
+    \caption[Box plots of Parameter Estimates using Brownian bridge importance sampling using different numbers of bridges]{Box plots of estimated parameters using the Brownian bridge importance sampling likelihood on 100 Langevin tracks simulated at a resolution of $0.01$, thinned to $\Delta_t = 1$ and shortened to 5000 observations. The estimates were found using $N=49$ for each of $M \in \{5 , \ 10, \ 50, \ 100, \ 200\}$. Red line indicates the true value of the parameter.}
     \label{fig:varying M boxplots brownian bridge}
 \end{figure}
 
-Figure~\ref{fig:varying M boxplots brownian bridge} shows that there are biases in the estimates of all parameters using the Brownian bridge importance sampling likelihood when the number of bridges used $M$ is small. These biases decrease as the value of $M$ increases, and for $M$ greater than or equal to 100, no bias is observed in the figure. at $M =50$ there is no bias for the $\bm \beta$ parameters but a small bias for the $\gamma^2$ estimates. Another observation is that the variance of the estimates decreases as $M$ increases.
+The code for generating Figure~\ref{fig:varying M boxplots brownian bridge} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying M Brownian bridge estimates.R". Figure~\ref{fig:varying M boxplots brownian bridge} shows that there are biases in the estimates of all parameters using the Brownian bridge importance sampling likelihood when the number of bridges used $M$ is small. These biases decrease as the value of $M$ increases, and for $M$ greater than or equal to 100, no bias is observed in the figure. at $M =50$ there is no bias for the $\bm \beta$ parameters but a small bias for the $\gamma^2$ estimates. Another observation is that the variance of the estimates decreases as $M$ increases.
 
 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Images/Results/varying M estimates boxplot precomputed BB.pdf}
-    \caption[Box plots of Parameter Estimates using pre-computed Brownian bridge importance sampling using different numbers of bridges]{box plots showing how the parameter estimates using the importance sampling estimator, with pre-computed Brownian bridges is affected by how many bridges M are used. The red dotted lines show the true values of the parameters.}
+    \caption[Box plots of Parameter Estimates using precomputed Brownian bridge importance sampling using different numbers of bridges]{Box plots of estimated parameters using the precomputed Brownian bridge importance sampling likelihood on 100 Langevin tracks simulated at a resolution of $0.01$, thinned to $\Delta_t = 1$ and shortened to 5000 observations. The estimates were found using $N=49$ for each of $M \in \{5 , \ 10, \ 50, \ 100, \ 200\}$. Red line indicates the true value of the parameter.}
     \label{fig:varying M boxplots precomputed brownian bridge}
 \end{figure}
 
-Figure~\ref{fig:varying M boxplots precomputed brownian bridge} shows that there is a large bias in the estimate of $\gamma^2$ for all values of $M$ tested. In addition, there is a bias in $\beta_1$ and $\beta_2$ when $M$ is small. The biases observed decrease as $M$ increases, and for $M$ greater than or equal to 50 there is no bias observed in the estimates of $\bm \beta$. Unlike what was observed in figure~\ref{fig:varying M boxplots brownian bridge}, the variance here is stable for all values of $M$.
+The code for generating Figure~\ref{fig:varying M boxplots precomputed brownian bridge} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "varying M precomputed Brownian bridge estimates.R". Figure~\ref{fig:varying M boxplots precomputed brownian bridge} shows that there is a large bias in the estimate of $\gamma^2$ for all values of $M$ tested. In addition, there is a bias in $\beta_1$ and $\beta_2$ when $M$ is small. The biases observed decrease as $M$ increases, and for $M$ greater than or equal to 50 there is no bias observed in the estimates of $\bm \beta$. Unlike what was observed in figure~\ref{fig:varying M boxplots brownian bridge}, the variance here is stable for all values of $M$.
 
 
 \subsection{Testing Computation Time}
@@ -131,12 +129,12 @@ To test the time taken to estimate the parameters of tracks using the importance
         10.084955 & 14.25600 \\
         9.397101  & 21.36654 \\
     \end{tabular}
-    \caption[table of estimation times with and without pre-computation of Brownian bridges]{table of estimation times for ten tracks using the importance sampling likelihood estimates, both with and without precomputed Brownian bridges. estimation times with precomputed bridges are shown to the left and without to the right.}
+    \caption[table of estimation times with and without precomputation of Brownian bridges]{Table of estimation times for ten Langevin tracks simulated at a reolution of $0.01$, thinned to $\Delta_t = 1$ and shortened to 5000 observation, using the importance sampling likelihood estimates, both with and without precomputed Brownian bridges. The estimates were found using $M=50$, $N = 99$ in both cases. Estimation times with precomputed bridges are shown to the left and without to the right.}
     \label{tab: times}
 \end{table}
 
 
-From table~\ref{tab: times} we can calculate the mean time for the method using precomputed Brownian bridges at 9.901651 minutes and a mean time spent of 18.8885 for when the bridges were not precomputed. The standard deviation using precomputed bridges was 0.5049866 minutes and 4.48797 minutes when not using precomputed bridges. Overall, pre-computing the Brownian bridges gave shorter and less varied estimation times.
+The code for generating Table~\ref{tab: times} can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "Brownian bridge likelihood time test.R". From table~\ref{tab: times} we can calculate the mean time for the method using precomputed Brownian bridges at 9.901651 minutes and a mean time spent of 18.8885 for when the bridges were not precomputed. The standard deviation using precomputed bridges was 0.5049866 minutes and 4.48797 minutes when not using precomputed bridges. Overall, precomputing the Brownian bridges gave shorter and less varied estimation times.
 
 
 

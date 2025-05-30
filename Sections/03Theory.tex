@@ -1,92 +1,97 @@
-In this chapter, I present the theory that will be used throughout the thesis.
-
-
 
 \section{Stochastic Differential Equations}
-Stochastic differential equations can be used to describe how stochastic variables change over time. These are widely used to model phenomena in areas as diverse as finance, ecology, epidemiology, neurology, geology, and physics \cite{iacus_simulation_2008}. The following section introduces the concept of a stochastic diffusion equation, which is a form of stochastic differential equation, and the preliminaries that are necessary to define such an equation.
+Stochastic differential equations can be used to describe how stochastic variables change over time. These are widely used to model phenomena in areas as diverse as finance, ecology, epidemiology, neurology, geology, and physics \parencite{iacus_simulation_2008}. The following section introduces the concept of a stochastic diffusion equation, which is a form of stochastic differential equation, and the preliminaries that are necessary to define such an equation.
 
 
 \subsection{Brownian Motion}
-Brownian motion is a continuous stochastic process which can be characterized as the limit of a random walk process where the Gaussian step's length tend to 0. A stochastic process $B = \{B_t:t\geq 0\}$ is a Brownian motion if it has continuous paths and independent Gaussian increments such that $B_0 = 0$ with probability 1, $E[B_t] = 0$ and $Var(B_t - B_s) = t-s$, for $0 < s < t$(\cite{iacus_simulation_2008}).  That $B_t$ is a continuous path means that
+Brownian motion is a continuous stochastic process which can be characterized as the limit of a random walk process where the Gaussian step's length tend to 0. A stochastic process $B = \{B_t:t\geq 0\}$ is defined as a Brownian motion if it has continuous paths and independent Gaussian increments such that $B_0 = 0$ with probability 1, $E[B_t] = 0$ and $Var(B_t - B_s) = t-s$, for $0 < s < t$\parencite{iacus_simulation_2008}.  
 
-Using this definition, we can define the standard Brownian motion of k-dimensional starting at $\textbf{x} \in \mathbb{R}^k$ as the vector of k-dimensional $\mathbf{B}^\mathbf{x} = (B^{x_1}, \dots , B^{x_k})$, which contains standard Brownian motions $B^{x_i}$ with starting points $x_i$\cite{bhattacharya_continuous_2023}.
 
-Lastly, we can define an even more general version of the Brownian motion. That is, given a $k \times k$ matrix $\pmb{\sigma}$ and a k-dimensional vector $mu$, we can define the stochastic process $\mathbf{X}_t^\mathbf{x} = \mathbf{x} + \pmb{\mu}t + \pmb{\sigma} \mathbf{B}$ as the k-dimensional Brownian motion starting at $\mathbf{x} \in \mathbb{R}^k$, with drift coefficient $\pmb{\mu}$ and diffusion coefficient $\mathbf{D} = \pmb{\sigma} \pmb{\sigma}^T$ \cite{bhattacharya_continuous_2023}.
+Using this definition, we can define the standard Brownian motion of k-dimensional starting at $\textbf{x} \in \mathbb{R}^k$ as the vector of k-dimensional $\mathbf{B}^\mathbf{x} = (B^{x_1}, \dots , B^{x_k})$, which contains standard Brownian motions $B^{x_i}$ with starting points $x_i$\parencite{bhattacharya_continuous_2023}.
+
+Lastly, we can define an even more general version of the Brownian motion. That is, given a $k \times k$ matrix $\pmb{\sigma}$ and a k-dimensional vector $\mu$, we can define the stochastic process $\mathbf{X}_t^\mathbf{x} = \mathbf{x} + \pmb{\mu}t + \pmb{\sigma} \mathbf{B}$ as the k-dimensional Brownian motion starting at $\mathbf{x} \in \mathbb{R}^k$, with drift coefficient $\pmb{\mu}$ and diffusion coefficient $\mathbf{D} = \pmb{\sigma} \pmb{\sigma}^T$ \parencite{bhattacharya_continuous_2023}.
+
+\cite{michelot_langevin_2019}
+
+
+\begin{comment}
 
 \subsection{Stochastic Integrals}
-The integral of a function with respect to the Brownian motion is known as an Itô integral. 
-$$I(X) = \int_0^T X(u)dB_u$$
+The integral of a function with respect to the Brownian motion is known as an Itô integral
+$$I(X) = \int_0^T X(u)dB_u.$$
 
-\cite{iacus_simulation_2008}
+\parencite{iacus_simulation_2008}
 
 
 Let $f(t)$ be a non-stochastic continuously differentiable function. Then
 
 $$\int_\alpha^\beta f(s)dB_s = f(\beta)B_\beta - f(\alpha)B_\alpha - \int_\alpha^\beta B_sf'(s) ds   $$
 
-
+\end{comment}
 
 \subsection{Diffusion Processes}
 \label{sec: diffusion processes}
 We can use Brownian motion to define a type of SDE called a stochastic diffusion equation. This defines a stochastic diffusion process as the solution to the equation
 
 \begin{equation}
-    d{\textbf{X}}_t = {\pmb{\mu}} ({\textbf{X}}_t )dt + \pmb{\sigma}({X}_t ) d\textbf{B}_t, \   t > 0 , \ \textbf{X}(0) = \textbf{X}_0
+    d{\textbf{X}}_t = {\pmb{\mu}} ({\textbf{X}}_t )dt + \pmb{\sigma}({X}_t ) d\textbf{B}_t, \   t > 0 , \ \textbf{X}(0) = \textbf{X}_0.
 \end{equation}
 
-where $\textbf{B}_t$ is a k-dimensional standard Brownian motion, and $\textbf{X}_t$ is a k-dimensional stochastic variable. $\pmb{\mu}$ is a k-dimensional vector known as the drift of the equation, and $\pmb{\sigma}(t)$ is a $k\times k$-dimensional matrix, where $\pmb{\sigma}(t)\pmb{\sigma}(t)^T$ is known as the diffusion matrix. The displacements $\textbf{X}_{t+dt} - \textbf{X}_t$ are approximately Gaussian when $\pmb{\mu}$ and $\pmb{\sigma}^2(x)$ are sufficiently smooth, with mean $\pmb{\mu}(\textbf{X}_t)dt$ and variance $\pmb{\sigma}(\textbf{X}_t)\pmb{\sigma}(\textbf{X}_t)^Tdt$ \cite{bhattacharya_continuous_2023}
+where $\textbf{B}_t$ is a k-dimensional standard Brownian motion, and $\textbf{X}_t$ is a k-dimensional stochastic variable. $\pmb{\mu}$ is a k-dimensional vector known as the drift of the equation, and $\pmb{\sigma}(t)$ is a $k\times k$-dimensional matrix, where $\pmb{\sigma}(t)\pmb{\sigma}(t)^T$ is known as the diffusion matrix. The displacements $\textbf{X}_{t+dt} - \textbf{X}_t$ are approximately Gaussian when $\pmb{\mu}$ and $\pmb{\sigma}^2(x)$ are sufficiently smooth, with mean $\pmb{\mu}(\textbf{X}_t)dt$ and variance $\pmb{\sigma}(\textbf{X}_t)\pmb{\sigma}(\textbf{X}_t)^Tdt$ \parencite{bhattacharya_continuous_2023}
 
 
 
 
 \subsection{Euler-Maruyama  Discretization}
 \label{subsec: Euler-Maruyama}
-Often there is no analytical solution available for SDEs. In these cases, the distribution which results from the SDE has to be approximated by using discretization schemes.  One of the most popular approximation schemes for SDEs is the Euler-Maruyama discretization, which is inspired by Euler's method for initial value problems. The approximation can be applied to any SDE of the form
+Often there is no analytical solution available for SDEs. In these cases, the distribution which results from the SDE has to be approximated by using discretization schemes.  One of the most popular approximation schemes for SDEs is the Euler-Maruyama (EM) discretization, which is inspired by Euler's method for initial value problems. The approximation can be applied to any SDE of the form
 
 \begin{equation}
-    d\textbf{X}_t = \mu(t, \textbf{X}_t)dt + \sigma(t, \textbf{X}_t)d\textbf{B}_t
+    d\textbf{X}_t = \mu(t, \textbf{X}_t)dt + \sigma(t, \textbf{X}_t)d\textbf{B}_t.
 \end{equation}
 
 Where $\textbf{B}_t$ is the standard d-dimensional Brownian motion. For such equations, it defines a continuous approximate solution $Y(t)$ on a discretized time interval $0=t_0 < t_1 < \dots < t_N = T$. At the discretization points, the approximation is given by
 
 \begin{equation}
-    \textbf{X}_{i+1} = \textbf{X}_i + \mu(t_i, \textbf{X}_i)(t_{i+1} - t_i) + \sigma(t_i, \textbf{X}_i)(\textbf{B}_{i+1} - \textbf{B}_i)
+    \textbf{X}_{i+1} = \textbf{X}_i + \mu(t_i, \textbf{X}_i)(t_{i+1} - t_i) + \sigma(t_i, \textbf{X}_i)(\textbf{B}_{i+1} - \textbf{B}_i).
     \label{eq: euler approximation}
 \end{equation}
 
+\parencite{iacus_simulation_2008}
 
 
 
 \section{First and Second Derivative Approximation}
+On multiple occasions in this thesis, I use first and second derivatives to find the gradient and hessian of spatial covariates. These covariates will be represented by values on a regular grid, instead of a function. This grid does not in itself have derivatives, but the grid can be found using polynomial interpolation.
 \subsection{First Derivative}
 \label{subsec: gradient estimation}
-On multiple occasions in this thesis, I use first and second derivatives to find the gradient and hessian of spatial covariates. These covariates will be represented by values on a regular grid, instead of a function. This grid does not in itself have derivatives, but the grid can be found using polynomial interpolation. For the first-order derivatives, i follow \parencite{michelot_langevin_2019} and use bilinear interpolation to find an approximation. and i approximate the second derivatives using bicubic interpolation. 
+ For the first-order derivatives, i follow \parencite{michelot_langevin_2019} and use bilinear interpolation to find an approximation. and i approximate the second derivatives using bicubic interpolation. 
 
-\
+
 
 Let $f:\mathbb{R}^2\rightarrow \mathbb{R}$ be the function that we want to find the derivative of at a point $(x,y) \in \mathbb{R}^2$, when we know the value of $f$ at points $(x_1, y_1), (x_2, y_1), (x_1, y_2), (x_2, y_2) \in \mathbb{R}^2$ where $x_2 < x < x_1$ and $y_2 < y < y_1$. We can write the known values of $f$ as 
 
 
 $$
 \begin{array}{lcl}
-     f(x_1, y_1)& = & f_{11}  \\
-     f(x_1, y_2)& = & f_{12}  \\
-     f(x_2, y_1)& = & f_{21}  \\
-     f(x_2, y_2)& = & f_{22}  
+     f(x_1, y_1)& = & f_{11},  \\
+     f(x_1, y_2)& = & f_{12},  \\
+     f(x_2, y_1)& = & f_{21},  \\
+     f(x_2, y_2)& = & f_{22}.  
 \end{array}
 $$
 The bilinear interpolation of $f$ in $(x,y)$ is  
 
 $$
-\hat{f}(x,y) = \frac{y_2-y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y-y_1}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})
+\hat{f}(x,y) = \frac{y_2-y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y-y_1}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22}).
 $$
 
 The partial derivatives of the interpolated function are as follows
 
 $$
 \begin{array}{lcl} 
-    \frac{\partial\hat{f}}{\partial x} & = & \dfrac{(y_2-y)(f_{21}-f_{11}) + (y-y_1)(f_{22}- f_{12})}{(y_2-y_1)(x_2-x_1)} \\
-    \frac{\partial\hat{f}}{\partial y} & = & \dfrac{(x_2-x)(f_{12}-f_{11}) + (x-x_1)(f_{22}-f_{21})}{(y_2-y_1)(x_2-x_1)}
+    \frac{\partial\hat{f}}{\partial x} & = & \dfrac{(y_2-y)(f_{21}-f_{11}) + (y-y_1)(f_{22}- f_{12})}{(y_2-y_1)(x_2-x_1)}, \\
+    \frac{\partial\hat{f}}{\partial y} & = & \dfrac{(x_2-x)(f_{12}-f_{11}) + (x-x_1)(f_{22}-f_{21})}{(y_2-y_1)(x_2-x_1)}.
 \end{array}
 $$
 
@@ -95,10 +100,10 @@ $$
 For the second derivative, assume that we have $x_{-1} < x_0 < x < x_1 < x_2$ and $y_{-1} < y_0 < y < y_1 < y_2$, and define $f_{ij} = f(x_i, y_j)$, $f_{xij} = f_x(x_i,y_j)$, $f_{yij} = f_y(x_i,y_j)$ and $f_{xyij}$ for $i,j = 0, 1$. When we have the values for $f(x,y), f_x(x,y), f_y(x,y), f_{xy}(x,y)$ at the positions $(x_0, y_0), (x_1, y_0), (x_0, y_1), (x_1, y_1)$. We can find the bicubic interpolation polynomial by
 
 $$
-\hat{f}(x,y) = \sum_{i=0}^3 \sum_{j=0}^3 a_{ij}x^i y^j
+\hat{f}(x,y) = \sum_{i=0}^3 \sum_{j=0}^3 a_{ij}x^i y^j.
 $$
 
-where $a_{ij}$ are the indexes of the matrix $A$, which can be found by solving
+where $a_{ij}$ are the indices of the matrix $A$, which can be found by solving
 
 $$
 A = \begin{pmatrix}
@@ -116,7 +121,7 @@ A = \begin{pmatrix}
     0&0&3&-2 \\
     0&1&-2&1 \\
     0&0&-1&1
-\end{pmatrix}
+\end{pmatrix},
 $$
 
 
@@ -125,9 +130,9 @@ we can then find the second derivatives by using
 
 $$
 \begin{array}{rcl}
-    \hat{f}_{xx}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 i (i-1) a_{ij}x^{i-2} y^j \\
-    \hat{f}_{xy}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 i j a_{ij}x^{i-1} y^{j-1} \\
-    \hat{f}_{yy}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 j (j-1) a_{ij}x^{i} y^{j-2}
+    \hat{f}_{xx}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 i (i-1) a_{ij}x^{i-2} y^j, \\
+    \hat{f}_{xy}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 i j a_{ij}x^{i-1} y^{j-1}, \\
+    \hat{f}_{yy}(x,y) & = & \sum_{i=2}^3 \sum_{j=0}^3 j (j-1) a_{ij}x^{i} y^{j-2}.
 \end{array}
 $$
 
@@ -136,9 +141,9 @@ The values $f_{xij}$, $f_{yij}$, and $f_{xyij}$ are not available to us, so they
 
 $$
 \begin{array}{rcl}
-    f_{xij} & \approx & \dfrac{f_{i+1,j} - f_{i-1,j}}{x_{i+1} - x_{i-1}}  \\
-    f_{yij} & \approx & \dfrac{f_{i,j+1} - f_{i,j-1}}{y_{j+1} - y_{j-1}} \\
-    f_{xyij} & \approx & \dfrac{f_{i+1,j+1} - f_{i+1,j-1} - f_{i-1,j+1} + f_{i-1,j-1}}{(x_{i+1} - x_{i-1})(y_{j+1} - y_{j-1})}
+    f_{xij} & \approx & \dfrac{f_{i+1,j} - f_{i-1,j}}{x_{i+1} - x_{i-1}},  \\
+    f_{yij} & \approx & \dfrac{f_{i,j+1} - f_{i,j-1}}{y_{j+1} - y_{j-1}}, \\
+    f_{xyij} & \approx & \dfrac{f_{i+1,j+1} - f_{i+1,j-1} - f_{i-1,j+1} + f_{i-1,j-1}}{(x_{i+1} - x_{i-1})(y_{j+1} - y_{j-1})}.
 \end{array}
 $$
 
@@ -148,10 +153,10 @@ $$
 \section{Metropolis-Hastings Algorithm}
 
 
-The Metropolis-Hasting algorithm constructs a Markov chain in such a way that its stationary distribution is that of a target distribution $\pi$ from which we are trying to sample. The algorithm uses a proposal kernel $p(\phi | \theta)$ to propose a new value $\phi$ for the Markov chain, given the previous value $\theta$. If the density of the proposal satisfies the reversibility condition $\pi(\theta) p(\theta|\phi) = \pi(\phi) p(\phi|\theta)$ for all $\phi,\theta$ in the state space of the Markov chain, then the Markov chain. The Metropolis-Hastings algorithm achieves this by using a proposal density $q(\phi|\theta)$ and a rejection probability $\alpha(\phi|\theta)$. The proposed value from the proposal density is accepted as a sample observation with a probability $1-\alpha$, which ensures that the reversibility condition is satisfied. If the proposal is rejected, the chain stays at the initial value, and the initial value. The rejection probability of the Metropolis-Hastings algorithm is
+The Metropolis-Hasting algorithm constructs a Markov chain in such a way that its stationary distribution is that of a target distribution $\pi$ from which we are trying to sample. The algorithm uses a proposal kernel $p(\phi | \theta)$ to propose a new value $\phi$ for the Markov chain, given the previous value $\theta$. If the density of the proposal satisfies the reversibility condition $\pi(\theta) p(\theta|\phi) = \pi(\phi) p(\phi|\theta)$ for all $\phi,\theta$ in the state space of the Markov chain, then the Markov chain converges to the target distribution. The Metropolis-Hastings algorithm achieves this by using a proposal density $q(\phi|\theta)$ and a rejection probability $\alpha(\phi|\theta)$. The proposed value from the proposal density is accepted as a sample observation with a probability $1-\alpha$, which ensures that the reversibility condition is satisfied. If the proposal is rejected, the chain stays at the initial value, and the initial value. The rejection probability of the Metropolis-Hastings algorithm is
 
 $$
-    \alpha = min \left( 1, \frac{f_t(\phi)q(\phi|\theta)}{f_t(\theta)q(\theta|\phi)} \right) = min \left( 1, \frac{\pi(\phi)L(X,Y|\phi)q(\phi|\theta)}{\pi(\theta)L(X,Y|\theta)q(\theta|\phi)} \right)
+    \alpha = min \left( 1, \frac{f_t(\phi)q(\phi|\theta)}{f_t(\theta)q(\theta|\phi)} \right) = min \left( 1, \frac{\pi(\phi)L(X,Y|\phi)q(\phi|\theta)}{\pi(\theta)L(X,Y|\theta)q(\theta|\phi)} \right).
 $$
 
 \parencite{gamerman2006mcmc}
@@ -162,16 +167,15 @@ The Kalman filter gives an estimate for the states of a state-space model. A sta
 
 $$
 \begin{array}{lcl}
-\textbf{Z}_k &=& h(\textbf{X}_k) + \textbf{v}_k
+\textbf{Z}_k &=& h(\textbf{X}_k) + \textbf{v}_k,
 \\
-\textbf{X}_{k+1} &=& f(\textbf{X}_k) + \textbf{w}_k
+\textbf{X}_{k+1} &=& f(\textbf{X}_k) + \textbf{w}_k.
 \end{array}
 $$
 
  Where $\textbf{v}_k$ and $\textbf{w}_k$ are two-dimensional Gaussian distributions with zero mean and covariance matrices $\textbf{R}_k$ and $\textbf{Q}_k$, respectively. $f$ and $h$ are referred to as the transition function and the observation function. The transition from one state to another depends only on the previous state, so the states form a Markov chain. The observations are only dependent on the current state, so the relationship can be visualized as a graph
 
- \
-
+\begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}[main/.style = {draw, circle}]
 %Nodes
@@ -193,99 +197,46 @@ $$
 \draw[dashed, ->] (state1.east) -- (staten.west);
 \end{tikzpicture} 
 \end{center}
-\ 
+     \caption[State space model]{graph of state space model. $X_i$ are hidden states and $Z_i$ are observations. The arrows show the dependency between the variables.}
+    \label{fig: state space model}
+\end{figure}
  
- In the case where $f$ and $h$ are linear, we can use the Kalman filter to find the likelihood of observations of the state-space model. In this thesis, the transition function used is not linear. What can be used instead is the extended Kalman filter, which is a nonlinear extension of the Kalman filter. Using the extended Kalman filter, we get an estimate $\hat{\textbf{X}}_{n|m}$ for the hidden state $\textbf{X}_n$ using the observations up to $\textbf{Z}_m$
+ In the case where $f$ and $h$ are linear, we can use the Kalman filter to find the likelihood of observations of the state-space model. In this thesis, the transition function used is not linear. What can be used instead is the EKF, which is a nonlinear extension of the Kalman filter. Using the EKF, we get an estimate $\hat{\textbf{X}}_{n|m}$ for the hidden state $\textbf{X}_n$ using the observations up to $\textbf{Z}_m$, using a predict step and an update step:
 
 
-\
+
 
 \textbf{predict:}
 
-Predicted state estimate: $\bm{\hat X}_{k|k-1} = f(\bm{\hat X}_{k-1|k-1} )$
+Predicted state estimate: $\bm{\hat X}_{k|k-1} = f(\bm{\hat X}_{k-1|k-1} ),$
 
-Predicted estimate covariance: $\textbf{P}_{k|k-1} = \textbf{F}_k\textbf{P}_{k-1|k-1} \textbf{F}_k^T + \textbf{Q}_k$
+Predicted estimate covariance: $\textbf{P}_{k|k-1} = \textbf{F}_k\textbf{P}_{k-1|k-1} \textbf{F}_k^T + \textbf{Q}_k.$
 
-\
+
 
 \textbf{update:}
 
-Innovation: $\bm{\tilde y}_{k} = \textbf{Z}_k - h(\bm{\hat X}_{k|k-1})$
+Innovation: $\bm{\tilde y}_{k} = \textbf{Z}_k - h(\bm{\hat X}_{k|k-1}),$
 
-Innovation covariance: $\textbf{S}_k = \textbf{H}_k \textbf{P}_{k|k-1}\textbf{H}_k^T + \textbf{R}_k$
+Innovation covariance: $\textbf{S}_k = \textbf{H}_k \textbf{P}_{k|k-1}\textbf{H}_k^T + \textbf{R}_k,$
 
-Optimal Kalman gain: $\textbf{K}_k = \textbf{P}_{k|k-1} \textbf{H}_k^T \textbf{S}_k^{-1}$
+Optimal Kalman gain: $\textbf{K}_k = \textbf{P}_{k|k-1} \textbf{H}_k^T \textbf{S}_k^{-1},$
 
-Updated state estimate: $\bm{\hat X}_{k|k} = \bm{\hat X}_{k|k-1} + \textbf{K}_k \bm{\tilde y}_{k}$
+Updated state estimate: $\bm{\hat X}_{k|k} = \bm{\hat X}_{k|k-1} + \textbf{K}_k \bm{\tilde y}_{k},$
 
-Updated estimate covariance: $\textbf{P}_{k|k} = (\textbf{I} - \textbf{K}_k \textbf{H}_k)\textbf{P}_{k|k-1}$
+Updated estimate covariance: $\textbf{P}_{k|k} = (\textbf{I} - \textbf{K}_k \textbf{H}_k)\textbf{P}_{k|k-1}.$
 
 
 
-\
+Where $\textbf{F}_k = Jac (f)(\hat{X}_{k-1|k-1})$ and $\textbf{H}_k = Jac( h)(\hat{X}_{k-1|k-1})$
 
-where $\textbf{F}_k = Jac (f)(\hat{X}_{k-1|k-1})$ and $\textbf{H}_k = Jac( h)(\hat{X}_{k-1|k-1})$
 
-\
 
-using the state and covariance estimates, we get the likelihood 
+using the state and covariance estimates, we get the likelihood of the observations in the state space model
 
-$$L = \prod_{k=0}^n \mathcal{N}(\textbf{Z}_k; h(\hat{\textbf{X}}_{k|k-1}), \textbf{S}_k) \label{eq: EKF likelihood}$$
+$$L = \prod_{k=0}^n \mathcal{N}(\textbf{Z}_k; h(\hat{\textbf{X}}_{k|k-1}), \textbf{S}_k) \label{eq: EKF likelihood}.$$
 
 Where $n$ is the number of observations.\parencite{kulikov_extended_2024}
-
-\begin{comment}
-
-    \section{Poisson Processes}
-A Poisson process is a stochastic process which consists of individual points scattered in a space. This scattering is uniform, with a rate at which the points occur. The poisson process is used extensively in statitsics to describe a broad range of natural phenomena, for example the occurrence of animal observations. \parencite{Pinsky2011} defines the Poisson process by 
-
-\
-
-Definition: Let $S \subset \mathbb{R}^k$, $\mathscr{A}$ be the family of subsets of $S$ and for any set $A\in \mathscr{A}$, let $|A|$ denote the size of A. Then ${N(A):A\in \mathscr{A}}$ is a homogeneous Poisson process of intensity $\lambda$ if (1) for each $A \in \mathscr{A}$, the random variable $N(A)$ has a Poisson distribution with parameter $\lambda|A|$, and (2) for each finite collection $\{ A_1, \dots A_n\}$ of disjoint subsets of $S$, the random variables $N(A_1), \dots, N(A_n)$ are independent. 
-
-\
-The poisson distribution is defines as 
-
-
-$$
-P(N=n) = \frac{e^{-\mu}\mu^n}{n!}
-$$
-
-
-The homogeneous Poisson process can be extended to what is called the inhomogeneous Poisson point process. instead of having a constant intensity $\lambda$, we have an intensity function $\lambda(s)$ which varies with space or time. 
-
-An inhomogeneous Poisson point process is characterized by its intensity function $\lambda(s)$, and that the number of points in disjoints sets are distributed independently of each other. From he likelihood of observing n points $s_1, \dots, s_n$ within an area A is then
-
-
-\[
-\begin{array}{lll}
-L(s_1, \dots, s_n) &= \exp\left(-\int_A \lambda(s) \, ds\right) \prod_{i=1}^n \lambda(s_i) & \text{for } n \geq 1 \\
-L(n) &= \exp\left(-\int_A \lambda(s) \, ds\right) & \text{for } n = 0
-\end{array}
-\]
-
-
-
-Furthermore, we can simulate the inhomogeneous Poisson process on an area A by taking the maximum intensity $\lambda_{max}$ on A, the simulating a homogeneous Poisson point process on A using this intensity, then for each simulated point $x_i$ deciding to accept it using the probability $\frac{\lambda(x_i)}{\lambda_{max}}$\cite{spatial_point_patterns}.
-
-
-
-\end{comment}
-
-
-%\section{Gaussian Random Fields}
-%Gaussian random fields(GRFs) is a usefull tool in modelleing the interdependency between points in space. 
-
-%Definition 2 : A random field $\{X(s):s \in S\}$ where $S\subset \mathbb{R}^n$ is said to be Gaussian, if for every finite subset $\Lambda \subset S$ and sequence $\{X(s):s\in \Lambda\}$, $\sum_{s\in \Lambda} X(s)$ is Gaussian\cite{gaetan_spatial_2010}.
-
-%If a random field satisfies $E[X(s)^2]< \infty$ we call it a second order random field, and can define a covariance function $c(s,t) = Cov(X(s), X(t))$. from this we can construct the covariance matrix $\Sigma_{ij} = c(s_i,s_j)$ used in a GRF at postions $s_1, \dots s_k \in S$. The covariance function allows us to elegantly describe the large scale behaviour of the GRF. If the covariance function only depends on the distance between to points it is said to be isotropic. Throughout this thesis, the only covariance function used is the exponential covariance function which is isotropic and is give by
-
-%$$
-%    C(h;\sigma^2, \kappa, \phi) = \sigma^2 e^{-(h/\phi)^\kappa}
-%$$
-
-%\cite{gaetan_spatial_2010}. $\phi$ is known as the range parameter, $\kappa$ is the smoothness parameter, and $\sigma^2$ is the variance parameter. the varaiance parameter controls the magnitude of the covariance, the range parameter how fast the covariance declines with the increase in distance and the smoothness determines the rapidity of the decline. A high value for the smoothness parameter gives a field where there is little difference between close points, making the field appear more smooth.
-
 
 
 \section{Monte-Carlo Integration}
@@ -293,17 +244,17 @@ Furthermore, we can simulate the inhomogeneous Poisson process on an area A by t
 A common problem in statistics is taking an integral with respect to a stochastic variable. One such example is that of finding the expected value of a function of a variable $h$, $\mathbb{E}[h(X)]$. Often, this is difficult or impossible. In such cases, the expectation has to be estimated instead. Let $f$ be the distribution $X$ is drawn from, the Monte Carlo method then finds the estimate 
 
 \begin{equation}
-\hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i)
+\hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i).
 \label{eq: monte carlo estimator}    
 \end{equation}
   
-for the expected value of h, $\mathbb{E}[h(X)]$. By the strong law of large numbers, this estimate converges to the actual expectation as $N\rightarrow\infty$. Let $v(x) = (h(x) - {\mu})^2$ and assume that $h(X)^2$ has a finite expectation under f, then we can estimate the sampling variance of \eqref{eq: monte carlo estimator} by $\sigma^2/N = \mathbb{E}[v(X)/N]$. $\sigma^2$ can be estimated using the Monte Carlo estimator
+For the expected value of h, $\mathbb{E}[h(X)]$. By the strong law of large numbers, this estimate converges to the actual expectation as $N\rightarrow\infty$. Let $v(x) = (h(x) - {\mu})^2$ and assume that $h(X)^2$ has a finite expectation under f, then we can estimate the sampling variance of \eqref{eq: monte carlo estimator} by $\sigma^2/N = \mathbb{E}[v(X)/N]$. $\sigma^2$ can be estimated using the Monte Carlo estimator
 
 \begin{equation}
-    \widehat{Var}[\hat{\mu}] = \frac{1}{N-1}\sum_{i=1}^N (h(X_i) - \hat{\mu})^2
+    \widehat{Var}[\hat{\mu}] = \frac{1}{N-1}\sum_{i=1}^N (h(X_i) - \hat{\mu})^2.
 \end{equation}
 
-If $\sigma^2$ exists, then the central limit theorem implies that $\hat{\mu}$ is approximately Gaussian distributed for large $N$. Because of this, we can easily make confidence intervals for $\mu$\parencite{givens2013computational}.
+If $\sigma^2$ exists, then the central limit theorem implies that $\hat{\mu}$ is approximately Gaussian distributed for large $N$. Because of this, we can easily make confidence intervals for $\mu$ \parencite{givens2013computational}.
 
 
 \subsection{Importance Sampling}
@@ -311,7 +262,7 @@ If $\sigma^2$ exists, then the central limit theorem implies that $\hat{\mu}$ is
 Often, the variance of the estimator \eqref{eq: monte carlo estimator} can be large. This is especially true if events of interest for $h$ rarely occur under $f$. The idea of importance sampling is to draw from a different distribution $g$ which has higher probability for the events we are interested in, and then to adjust for the fact that we are not sampling from $f$. The expected value $\mu$ can be written in an alternate form $\int h(x)f(x)dx = \int h(x)\frac{f(x)}{g(x)}g(x) dx$ where we are taking an expectation with respect to $g$, instead of $f$. The Monte Carlo estimator then becomes
 
 \begin{equation}
-    \hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i)\frac{f(X_i)}{g(X_i)}
+    \hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i)\frac{f(X_i)}{g(X_i)}.
 \end{equation}
 
 For this estimator to work, it is important that the support of $g$ be equal to the support of $f$. Furthermore, if we want the estimator to reduce variability, $\frac{f(x)}{g(x)}$ should be bounded and $g$ should have heavier tails than $f$. Otherwise, a draw from $g$ with low probability, but high probability for $f$ would give a large $\frac{f(x)}{g(x)}$ which would make that sample dominate the estimate. This in turn would give an increased variance to the importance sampling estimator. Ideally, then, we want $\frac{f(x)}{g(x)}$ to be large only when $h(x)$ is small. \parencite{givens2013computational}

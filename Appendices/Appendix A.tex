@@ -4,26 +4,23 @@
 
 
 
-\section{gradients for precomputed brownian bridges likelihood}
+\section{gradients for precomputed Brownian bridges likelihood}
 
-In this appendix I derive the gradient of the Langevin likelihood estimate found using importance samling with brownian bridges \ref{eq: importance sampling likelihood}. The same gradient will be used for the method where the brownian bridges are precomputed as when they are not. For the importance sampling likelihood when the bridge are not pre-computed, we could have differentiated the likelihood with respect to the fact that the positions of the bridges are dependent on the speed parameter $\gamma^2$, but using a proposal that is with a small difference in variance, should still estimate the same likelihood.
+In this appendix, I derive the gradient of the Langevin likelihood estimate found using importance sampling with Brownian bridges \ref{eq: importance sampling likelihood}. The same gradient will be used for the method in which the Brownian bridges are precomputed as when they are not. For the importance sampling likelihood when the bridge are not precomputed, we could have differentiated the likelihood with respect to the fact that the positions of the bridges are dependent on the speed parameter $\gamma^2$, but using a proposal that is with a small difference in variance, should still estimate the same likelihood.
 
 
 \subsection{Gradient With Respect to \beta}
 Using the notation $L_{ij} = \frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk})$, where $f_{ijk}$ is the density of transition $k$ of bridge $j$ between observations $i$ and $i+1$, and $P_{ij}$ is the density of bridge $j$ between observations $i$ and $i+1$, we can write
 
+$$
+\partial_{\bm \beta} l =  \partial_{\bm \beta} \sum_{i=1}^K log(\frac{1}{M}\sum_{j=1}^M\frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}) =  \frac{\sum_{j=1}^ML_{ij}\partial_{\bm \bm \beta} log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
+$$
 
-\begin{equation} 
-\begin{split}
-\partial_{\bm \beta} l & =  \partial_{\bm \beta} \sum_{i=1}^K log(\frac{1}{M}\sum_{j=1}^M\frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}) \\
-    & =  \frac{\sum_{j=1}^ML_{ij}\partial_{\bm \bm \beta} log(L_{ij})}{\sum_{j=1}^ML_{ij}}
-\end{split}
-\end{equation}
 
 
 Since the proposal of bridge $ij$, $P_{ij}$, is independent of $\bm \beta$, we get
 $$
-\partial_{\bm \beta} log(L_{ij}) =  \sum_{k=0}^N \partial_{\bm \beta} log(f_{ijk})
+\partial_{\bm \beta} log(L_{ij}) =  \sum_{k=0}^N \partial_{\bm \beta} log(f_{ijk}).
 $$
 
 If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observation i and i+1 and let $g$ be the gradiant of the log of the utilization distribution at a given position, then we can write
@@ -33,7 +30,7 @@ If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observa
 \begin{split}
 \partial_{\bm \beta} log(f_{ijk}) & = \partial_{\bm \beta} (-log(2\pi \Delta \gamma^2) - \frac{1}{2\Delta \gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2) \\
 & = -\frac{1}{2\Delta\gamma^2}\partial_{\bm \beta} (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \frac{d}{dx} \left\lVert x \right\rVert_2^2(\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \\
-& = \frac{1}{2} g(\textbf{B}_{ijk})^T(\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta)
+& = \frac{1}{2} g(\textbf{B}_{ijk})^T(\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta).
 \end{split}
 \end{equation}
 
@@ -44,28 +41,28 @@ If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observa
 We le the probability of generating the bridges $P_ij$ be constant with respect to $\gamma^2$. This gives
 
 $$
-\partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} log(L_{ij})}{\sum_{j=1}^ML_{ij}}
+\partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
 $$
 
-
+Then we must first find
 $$
-\partial_{\gamma^2} log(f_{ijk}) = \partial_{\gamma^2} (-log(\gamma^2) - \frac{1}{2\Delta\gamma^2}\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2)
+\partial_{\gamma^2} log(f_{ijk}) = \partial_{\gamma^2} (-log(\gamma^2) - \frac{1}{2\Delta\gamma^2}\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2).
 $$
 
-using the product rule
+Using the product rule, we get
 
 \begin{align*}
-\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} -(\partial_{\gamma^2} \frac{1}{2\Delta \gamma^2})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} \partial_{\gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 
+\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} -(\partial_{\gamma^2} \frac{1}{2\Delta \gamma^2})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} \partial_{\gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2.
+\end{align*}
+
+For the second term, we can use the chain-rule for vector-differentiation to get
+
+\begin{align*}
+\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} (\partial_{\gamma^2} \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \partial_x \left\lVert x\right\rVert_2^2 (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta ).
 \end{align*}
 
 
-
-\begin{align*}
-\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} (\partial_{\gamma^2} \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \partial_x \left\lVert x\right\rVert_2^2 (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta )
-\end{align*}
-
-
-
+$||x|| = x^tx$, so we get
 
 \begin{align*}
 \partial_{\gamma^2} \log(f_{ijk}) 
@@ -78,45 +75,7 @@ using the product rule
 &\quad - \frac{1}{2\gamma^4} 
 \left( g(\textbf{B}_{ijk}) \bm{\beta} \right)^T 
 \left( \textbf{B}_{ijk+1} - \textbf{B}_{ijk} 
-- \frac{\Delta \gamma^2}{2} g(\textbf{B}_{ijk}) \bm{\beta} \right)
+- \frac{\Delta \gamma^2}{2} g(\textbf{B}_{ijk}) \bm{\beta} \right).
 \end{align*}
 
 
-
-\begin{comment}
-    
-We are given a grid of values $\{f_{ij}\}_{i,j}$ that represent the value of a covariate at points $(x_i, y_j)$. If we take a point $(x,y)$ in the study area, and say that $y_1$ is the value directly below $y$, $y_2$ is the value directly above $y$, $x_1$ is the value directly below $x$ and $x_2$ is the value directly above $x$ on the grid, then we can use linear interpolation to estimate the covariate at $(x,y)$ as 
-
-$$
-\hat{f}(x,y) = \frac{y_2-y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y - y_1}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})
-$$
-
-where $f_{11}$ is the value of the covariate $f$ at $(x_1, y_1)$, $f_{12}$ the value of $f$ at $(x_1, y_2)$, $f_{21}$ the value of $f$ at $(x_2, y_1)$, and $f_{22}$ the value of $f$ at $(x_2, y_2)$.
-
-If we discretize the study area using $A_{ij} = \{(x,y) \in \mathbb{R}|x_i < x < x_{i+1}, y_j < y < y_{j+1}  \}$, then we can find the intensity of each area as
-
-
-$$
-\lambda_{ij} = \int_{x_i}^{x_{i+1}} \int_{y_i}^{y_{i+1}} \hat{f}(x,y) dydx
-$$
-$$
-=\int_{x_i}^{x_{i+1}} [\frac{y_2y-y^2/2}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{y^2/2 - y_1y}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})]_{y_1}^{y_2} 
-$$
-$$
-= \int_{x_i}^{x_{i+1}} [\frac{y_2(y_2-y_1)-(y_2-y_1)^2/2}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{(y_2-y_1)^2/2 - y_1(y_2-y_1)}{y_2-y_1}(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22})]_{y_1}^{y_2} 
-$$
-$$
-= \int_{x_i}^{x_{i+1}}\frac{1}{2}(y_2+y_1)(\frac{x_2-x}{x_2-x_1}f_{11} + \frac{x-x_1}{x_2-x_1}f_{21}) + \frac{1}{2}(y_2-3y_1)(\frac{x_2-x}{x_2-x_1}f_{12} + \frac{x-x_1}{x_2-x_1}f_{22}) 
-$$
-$$
-=  \frac{1}{2}[(y_2+y_1)(\frac{x_2x-x^2/2}{x_2-x_1}f_{11} + \frac{x^2/2-x_1x}{x_2-x_1}f_{21}) + (y_2-3y_1)(\frac{x_2x-x^2/2}{x_2-x_1}f_{12} + \frac{x^2/2-x_1x}{x_2-x_1}f_{22})]_{x_1}^{x_2}
-$$
-$$
-= \frac{1}{2} ((y_2+y_1)(\frac{x_2(x_2-x_1)-(x_2-x_1)^2/2}{x_2-x_1}f_{11} + \frac{(x_2-x_1)^2/2-x_1(x_2-x_1)}{x_2-x_1}f_{21}) + (y_2-3y_1)(\frac{x_2(x_2-x_1)-(x_2-x_1)^2/2}{x_2-x_1}f_{12} + \frac{(x_2-x_1)^2/2-x_1(x_2-x_1)}{x_2-x_1}f_{22})) 
-$$
-$$
-= \frac{1}{4} ((y_2+y_1)((x_2+x_1)f_{11} + (x_2-3x_1)f_{21}) + (y_2-3y_1)((x_2+x_1)f_{12} + (x_2-3x_1)f_{22})) 
-$$
-
-where $\lambda_{ij}$ is the intensity for area $i,j$.
-\end{comment}
