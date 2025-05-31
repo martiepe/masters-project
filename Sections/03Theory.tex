@@ -228,7 +228,7 @@ Updated estimate covariance: $\textbf{P}_{k|k} = (\textbf{I} - \textbf{K}_k \tex
 
 
 
-Where $\textbf{F}_k = Jac (f)(\hat{X}_{k-1|k-1})$ and $\textbf{H}_k = Jac( h)(\hat{X}_{k-1|k-1})$
+Where $\textbf{F}_k = J (f)(\hat{X}_{k-1|k-1})$ and $\textbf{H}_k = J( h)(\hat{X}_{k-1|k-1})$ are the Jacobians of the transition and observation function.
 
 
 
@@ -250,9 +250,9 @@ A common problem in statistics is taking an integral with respect to a stochasti
   
 For the expected value of h, $\mathbb{E}[h(X)]$. By the strong law of large numbers, this estimate converges to the actual expectation as $N\rightarrow\infty$. Let $v(x) = (h(x) - {\mu})^2$ and assume that $h(X)^2$ has a finite expectation under f, then we can estimate the sampling variance of \eqref{eq: monte carlo estimator} by $\sigma^2/N = \mathbb{E}[v(X)/N]$. $\sigma^2$ can be estimated using the Monte Carlo estimator
 
-\begin{equation}
+$$
     \widehat{Var}[\hat{\mu}] = \frac{1}{N-1}\sum_{i=1}^N (h(X_i) - \hat{\mu})^2.
-\end{equation}
+$$
 
 If $\sigma^2$ exists, then the central limit theorem implies that $\hat{\mu}$ is approximately Gaussian distributed for large $N$. Because of this, we can easily make confidence intervals for $\mu$ \parencite{givens2013computational}.
 

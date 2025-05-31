@@ -1,84 +1,19 @@
 
 \label{chap: methods}
-In this section, two methods are presented that attempt to reduce the bias seen in the estimates from \cite{michelot_langevin_2019}. The first of these methods applies the EKF to an increased state-space model. The second is based on increasing the state space of the Langevin model using hidden states, then using the Monte Carlo method to integrate out the hidden states. 
+In this section, two methods are presented that attempt to reduce the bias seen in the estimates from \textcite{michelot_langevin_2019}. The first of these methods applies the EKF to an increased state-space model. The second is based on increasing the state space of the Langevin model using hidden states, then using the Monte Carlo method to integrate out the hidden states. 
 
 \section{Extended Kalman Filter}
-\parencite{kulikov_extended_2024} describes one method that tries to more accurately approximate the likelihood of diffusion processes using the EKF. If we use the EM method to describe a state-space model, we can then find a likelihood using the EKF. In addition, we can improve this likelihood approximation by adding extra hidden states between the states that we have observed. For the Langevin process, the state space representation is 
+\textcite{kulikov_extended_2024} describes one method that tries to more accurately approximate the likelihood of diffusion processes using the EKF. If we use the EM method to describe a state-space model, we can then find a likelihood using the EKF. In addition, we can improve this likelihood approximation by adding extra hidden states between the states that we have observed. For the Langevin process, the state space representation is 
 
-$$\textbf{X}_{k+1} = f(\textbf{X}_k) + \textbf{w}_k = \textbf{X}_k + \frac{\gamma^2\Delta_k}{2}\nabla log(\pi(\textbf{X}_k)) + \textbf{w}_k$$
+$$\textbf{X}_{k+1} = f(\textbf{X}_k) + \textbf{w}_k = \textbf{X}_k + \frac{\gamma^2\Delta_k}{2}\nabla \log(\pi(\textbf{X}_k)) + \textbf{w}_k,$$
 
-$$\textbf{Z}_k = h(\textbf{X}_k) + \textbf{w}_k$$
+$$\textbf{Z}_k = h(\textbf{X}_k) + \textbf{w}_k.$$
 
-where $\textbf{w}_k$ has a gaussian distribution with $0$ mean and covariance $\gamma^2\Delta_k I_{2*2}$, and $\textbf{v}_k$ has $0$ mean and covariance $\textbf{R}$. In the case where the process is being observed directly, the function $h$ is the identity function, and the matrix $\textbf{R}$ is a zero matrix. The method described in \parencite{kulikov_extended_2024} adds a mesh of $L$ hidden states to the state-space model between observations $\textbf{Z}_i$ and $\textbf{Z}_{i+1}$. When using the EKF on the added mesh states, only the predict step is performed since there are no observations. The likelihood is then computed using \eqref{eq: EKF likelihood}, which can be used to make estimates of the parameters. 
-
-\
-
-The matrices $\textbf{F}_k$ and $\textbf{H}_k$ in Section~\ref{sec: EKF} are the Jacobians of the transition and observation functions. Since the observation function $h$ is the identity function, we get $H_k = I_{2*2}$. Furthermore, we have $\textbf{F}_k = Jac(f) = Jac(\textbf{x} + \frac{\gamma^2 \Delta}{2}\nabla log(\pi(\textbf{x}))) = I_{2*2} + \frac{\gamma^2 \Delta}{2} H(\log(\pi(\textbf{x})))$. $H(\log(\pi(\textbf{x})))$ is the Hessian of the log of the UD, which, if we insert the RSF, becomes $H(\sum_{i=1}^n \beta_i c_i(\textbf{x})) = \sum_{i=1}^n \beta_iH( c_i)(\textbf{x})$. The calculation of this matrix involves taking the second derivative of the covariate functions. This can be found using the method described in Subsection~\ref{subsec: second derivative}.
-
-
-\begin{comment}
-    
-ADD THIS TO THE DISCUSSION
-{
-When using the EKF on the added mesh-nodes, only the predict step i performed. For the predicted state estimate, this means that the prediction of the following state is made using a deterministic path following the gradient of the UD. If $x_l$ are the mesh states, then $x_1 = X_{k-1|k-1}$, $x_{l+1} = x_l + \frac{\gamma^2\Delta}{2(L+1)} \nabla log(\pi(x_l))$ for $l = 2, \dots, L$, until we find the predicted state estimate $\hat{X}_{k|k-1} = x_L + \frac{\gamma^2\Delta}{2(L+1)} \nabla log(\pi(x_L))$. For the predicted estimate covariance we get $p_1 = P_{k|k-1}$, $p_l = F_l p_{l-1} F_l + Q$ for $l=2, \dots, L$ and $P_{k+1|k} = p_l$. Where $p_l$ is the mesh state covariances, $F_l$ is the Jacobian of the transition function evaluated at the mesh states.
+Where $\textbf{w}_k$ has a gaussian distribution with $0$ mean and covariance $\gamma^2\Delta_k I_{2*2}$, and $\textbf{v}_k$ has $0$ mean and covariance $\textbf{R}$. In the case where the process is being observed directly, the function $h$ is the identity function, and the matrix $\textbf{R}$ is a zero matrix. The method described in \textcite{kulikov_extended_2024} adds a mesh of $L$ hidden states to the state-space model between observations $\textbf{Z}_i$ and $\textbf{Z}_{i+1}$. When using the EKF on the added mesh states, only the predict step is performed since there are no observations. The likelihood is then computed using \eqref{eq: EKF likelihood}, which can be used to make estimates of the parameters. 
 
 \
 
-To demonstrate how the estimate of the EKF works in practice, we can take two points of the simulated Langevin process, and use the EKF to find an estimate for the second state using the first. We can then make a 90\% confidence interval for each state estimate by using $x±z_{\alpha/2}\sqrt{var}
-$ with $\alpha = 0.9$.
-
-\
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Images/ch3/EKF figure 1D.pdf}
-    \caption[EKF]{Plot of EKF state estimates. The black line shows the predicted state estimates over a time grid from 0 to 0.1, with increments 0.01. The blue ribbon shows the 90\% confidence interval for the predicted state estimate, and the red line show the Langevin process that is being estimated. The parameters used for generating the Langevin process and the EKF path are the same}
-    \label{fig:EKF 1D}
-\end{figure}
-
-\
-
-
-Figure Figure~\ref{fig:EKF 1D} demonstrates an issue with the EKF. The figure shows very little movement in the predicted state estimates (black) compared to the Langevin process (red). This is partly due to the example used. In the example the diffusion of the Langevin process dominates, and the drift from the covariates plays a much smaller role. In the setting of animal movement this is appropriate because the movement is highly unpredictable, but when using the EKF it means that the predicted state estimates don't approximate the Langevin process well. 
-
-\
-
-The predicted estimate covariance is partly based on the previous predicted state estimate, so an issue that comes up when the predicted estimate covariance moves differently from the Langevin process is that the predicted estimate covariance is also affected. Normally the EKF is used only on states where we have observations. The problem with increasing deviation from the real process does not occur in this case. In contrast when adding extra hidden states, the error in predicting one state is passed on to the next state. Despite this, the covariance estimate in figure~\ref{fig:EKF 1D} shows that the simulated Langevin process is within the 90\% confidence interval. 
-
-\
-
-As mentioned earlier, in the case used in figure~\ref{fig:EKF 1D}, the diffusion dominates the drift becasue of high diffusion constant used compared to the gradient of the covariates. We can test a case where the diffusion constant $\gamma$ is much smaller, and the value $\beta \gamma^2$ is kept as the same used in figure~\ref{fig:EKF 1D}. We should then expect the estimated path using the predict step of the EKF to be similar to the simulated Langevin process. The information which used to compute the estimate covariance $P_l$ using the jacobian of the transition function should also be more correct in this case.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Images/ch3/EKF path 2D.pdf}
-    \caption[EKF]{Plot of EKF state estimates. The black line shows the predicted state estimates over a time grid from 0 to 0.1, with increments 0.01. The elipses show the evolving 90\% confidence levels set computed using the predicted estimate covariance, and the red line show the Langevin process that is beeing estimated. The parameters used are the same for the Langevin process and the EKF}
-    \label{fig:EKF 2D}
-\end{figure}
-THIS FIGURE HAS TO SMALL TIME INTERVAL. THE INTERVALS SHOULD BE STRIPED
-
-\
-
-Figure~\ref{fig:EKF 2D} shows that when the diffusion of the Langevin process is small compared to the drift, the EKF estimates the unobserved states of the process well. 
-
-
-
-
-This example is not suited for animal prediction, since animal movements are highly random, and would have a large diffusion constant compared to 
-
-In multiple dimension the EKF might perform worse since there is more chaos?
-curse of dimmensionality
-
-
-}
-
-%Discussion: There is no guarantee that the EKF will converge to the correct likelihood.
-
-\end{comment}
-
-
-
+The matrices $\textbf{F}_k$ and $\textbf{H}_k$ in Section~\ref{sec: EKF} are the Jacobians of the transition and observation functions. Since the observation function $h$ is the identity function, we get $H_k = I_{2*2}$. Furthermore, we have $\textbf{F}_k = J(f) = J(\textbf{x} + \frac{\gamma^2 \Delta}{2}\nabla \log(\pi(\textbf{x}))) = I_{2*2} + \frac{\gamma^2 \Delta}{2} H(\log(\pi(\textbf{x})))$. $H(\log(\pi(\textbf{x})))$ is the Hessian of the log of the UD, which, if we insert the RSF, becomes $H(\sum_{i=1}^n \beta_i c_i(\textbf{x})) = \sum_{i=1}^n \beta_iH( c_i)(\textbf{x})$. The calculation of this matrix involves taking the second derivative of the covariate functions. This can be found using the method described in Subsection~\ref{subsec: second derivative}.
 
 
 
@@ -96,7 +31,7 @@ From here we can integrate out the hidden variable to get the likelihood of the 
 $$p(\textbf{X}_{k+1}|\textbf{X}_k) = \int q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}_1|\textbf{X}_k)d\textbf{Z}.
 $$
 
-Because the time difference between the states in $\textbf{z}$, is smaller than the time difference between $\textbf{X}_{k+1}$ and $\textbf{X}_k$, so $q_{\Delta_k/(N+1)}$ should be a better approximation for the Langevin process than $q_{\Delta_k}$. We can approximate this integral by using the Monte Carlo method described in Subsection~\ref{sec: Monte Carlo integration}. We can sample M paths $\textbf{Z}^i = (\textbf{Z}_1^i, \dots,\textbf{Z}_N^i)$ each with N nodes, using $\textbf{Z}_{j+1}^i = \textbf{Z}_j^i + \nabla log(\pi(\textbf{Z}_j^i)) + \frac{\Delta_k\gamma^2}{N+1}\bm \epsilon_j^i$ where $\bm \epsilon_j^i$ standard two-dimensional Gaussian distributions for $i=1, \dots , M$ and $j = 1,\dots , N$, using $\textbf{Z}_0^i = \textbf{X}_k$. We then get the likelihood estimate
+Because the time difference between the states in $\textbf{z}$, is smaller than the time difference between $\textbf{X}_{k+1}$ and $\textbf{X}_k$, so $q_{\Delta_k/(N+1)}$ should be a better approximation for the Langevin process than $q_{\Delta_k}$. We can approximate this integral by using the Monte Carlo method described in Subsection~\ref{sec: Monte Carlo integration}. We can sample M paths $\textbf{Z}^i = (\textbf{Z}_1^i, \dots,\textbf{Z}_N^i)$ each with N nodes, using $\textbf{Z}_{j+1}^i = \textbf{Z}_j^i + \nabla \log(\pi(\textbf{Z}_j^i)) + \frac{\Delta_k\gamma^2}{N+1}\bm \epsilon_j^i$ where $\bm \epsilon_j^i$ standard two-dimensional Gaussian distributions for $i=1, \dots , M$ and $j = 1,\dots , N$, using $\textbf{Z}_0^i = \textbf{X}_k$. We then get the likelihood estimate
 
 $$
 \hat{L}(\bm \beta , \gamma^2|X_k, X_{k+1}) =  \frac{1}{M}\sum_{i=1}^M q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}^i_N)\dots q_{\Delta_k/(N+1)}(\textbf{Z}^i_1|\textbf{X}_k).
@@ -127,9 +62,10 @@ $$
 \hat{l}(\bm \beta, \gamma^2) = \sum_{i = 1}^K log( \frac{1}{M}\sum_{j=1}^M \frac{1}{P_{ij}}\prod_{k=0}^N \mathcal{N}(B_{ijk+1} ; B_{ijk+1} - \frac{\Delta \gamma^2}{2}, \Delta\gamma^2 I_{2*2})).
 $$
 
-where the first and last elements of the bridges $B_{ij0}$ and $B_{ijN+1}$ are the observed values of the Langevin process $X_i$ and $X_{i+1}$ respectively, and $P_{ij}$ is the density of the j-th bridge between $\textbf{X}_{i+1}$ and $\textbf{X}_i$.
+where the first and last elements of the bridges $B_{ij0}$ and $B_{ijN+1}$ are the observed values of the Langevin process $X_i$ and $X_{i+1}$, respectively, and $P_{ij}$ is the density of the j-th bridge between $\textbf{X}_{i+1}$ and $\textbf{X}_i$.
 
-To demonstrate how the Brownian bridges reduce variance we can take two points of the simulated Langevin process, which has been thinned. We can then make a number of simulations of both the Langevin process and the Brownian bridge, using the same parameter for the Langevin process speed and the Brownian bridge variance.
+
+To demonstrate how Brownian bridges reduce the variance of likelihood estimates, a Langevin process was simulated using a resolution of $0.01$ with the Perlin covariates from Figure~\ref{fig:covariate plots} and $\gamma^2 = 5$ up to time $0.1$. 10 Brownian bridges were then simulated using the same diffusion as the Langevin process, and 10 Langevin processes were simulated using the same setup as with the original Langevin process, but with the Last increment of the process going to the endpoint of the original process. The results are shown in Figure~\ref{fig:monte carlo paths}. 
 
 
 \begin{figure}[H]%
@@ -142,10 +78,10 @@ To demonstrate how the Brownian bridges reduce variance we can take two points o
 \end{figure}
 
 
-The code for generating Figure~\ref{fig:monte carlo paths} can be found in the github repository in Appendix\ref{Appendix: github repo} under the file name "Langevin and Brownian bridge path figure".Figure~\ref{fig:monte carlo paths} shows one dimension of the paths simulated from the Langevin process in (a) and the Brownian bridge in (b), plotted against time. The true path of the Langevin process, whose endpoints we are simulating based on, is shown in red. The first figure shows how the final step of the simulated Langevin processes (black), in many cases, deviates from the Langevin process that we are trying to estimate. Since there is high variability in the distance from the last point in $\textbf{Z}^i$ to the next observation, this can cause the likelihood estimate to have a high variance. The second plot, on the other hand, shows that the proposed paths do not include large jumps, as the first plot. Because of this, using the Brownian bridges as a proposal density might reduce the variance of the likelihood estimate. judging by the Langevin process in red, the Brownian bridges are also plausible transitions of the Langevin process. 
+The code for generating Figure~\ref{fig:monte carlo paths} can be found in the github repository in Appendix \ref{Appendix: github repo} under the file name "Langevin and Brownian bridge path figure". Figure~\ref{fig:monte carlo paths} shows one dimension of the paths simulated from the Langevin process in (a) and the Brownian bridge in (b), plotted against time. The true path of the Langevin process, whose endpoints we are simulating based on, is shown in red. The first figure shows how the final step of the simulated Langevin processes (black), in many cases, deviates from the Langevin process that we are trying to estimate. Since there is high variability in the distance from the last point in $\textbf{Z}^i$ to the next observation, this can cause the likelihood estimate to have a high variance. The second plot, on the other hand, shows that the proposed paths do not include large jumps, as the first plot. Because of this, using the Brownian bridges as a proposal density might reduce the variance of the likelihood estimate. judging by the Langevin process in red, the Brownian bridges are also plausible transitions of the Langevin process. 
 
 
-Using the theory of subsection~\ref{subsec: importance sampling theory}, the density of the variables being integrated with respect to $f(x)$, is the Euler Maruyama transition probability. The density of the proposal, $g(x)$, is the probability of the Brownian bridge, and the function we are integrating over$h(x)$, is the probability transitioning in the last step to the end points of the Langevin process $q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)$. The support of $f$ is the same as the support of $g$, since both the Langevin process and the Brownian bridge can theoretically take on any value for any of the mesh states. When $g$ is small, $h$ is also likely to be small, indicating that the Brownian bridge should reduce the variance. \parencite{durham_numerical_2002}  shows that the importance sampling estimator reduces the root mean square error to the Langevin process, compared to using the Monte Carlo estimate.
+Using the theory of subsection~\ref{subsec: importance sampling theory}, the density of the variables being integrated with respect to $f(x)$, is the EM transition probability. The density of the proposal, $g(x)$, is the probability of the Brownian bridge, and the function we are integrating over$h(x)$, is the probability transitioning in the last step to the end points of the Langevin process $q_{\Delta_k/(N+1)}(\textbf{X}_{k+1}|\textbf{Z}_N)$. The support of $f$ is the same as the support of $g$, since both the Langevin process and the Brownian bridge can theoretically take on any value for any of the mesh states. When $g$ is small, $h$ is also likely to be small, indicating that the Brownian bridge should reduce the variance. \parencite{durham_numerical_2002}  shows that the importance sampling estimator reduces the root mean square error to the Langevin process, compared to using the Monte Carlo estimate.
 
 
 \subsection{precomputing Brownian Bridges}
