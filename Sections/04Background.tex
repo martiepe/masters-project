@@ -7,7 +7,7 @@ This thesis is motivated by the results presented in \parencite{michelot_langevi
 The Langevin process is a form of diffusion process described in Section~\ref{sec: diffusion processes}, and takes the form
 
 \begin{equation}
-    d\textbf{X}_t = \frac{1}{2} \nabla log(\pi(\textbf{X}_t))dt + d\textbf{B}_t, \ \textbf{X}_0 = \textbf{x}_0.
+    d\textbf{X}_t = \frac{1}{2} \nabla \log(\pi(\textbf{X}_t))dt + d\textbf{B}_t, \ \textbf{X}_0 = \textbf{x}_0.
     \label{eq:Langevin equation}
 \end{equation}
 
@@ -26,7 +26,7 @@ $\pi$ is referred to as the UD, and the drift term $\nabla log(\pi(\textbf{X}_t)
 To make use of the Langevin movement model in practice, there needs to be a parameter to control the speed of the process. This is because, although two animals might have the same UD, the speed at which they travel may be different. In the Langevin process \eqref{eq:Langevin equation} the speed of a particle is determined by the UD, so two particles with the same distribution. In reality, two animals can have the same UD, but still have different speeds. \parencite{roberts_optimal_1998} adds a speed parameter $\gamma^2$ to the Langevin process, which can change the speed of diffusion. The resulting process can be expressed by the equation
 
 \begin{equation}
-    d\textbf{X}_t = \frac{\gamma^2}{2} \nabla log(\pi(\textbf{X}_t))dt + \gamma d\textbf{B}_t, \ \textbf{X}_0 = \textbf{x}_0.
+    d\textbf{X}_t = \frac{\gamma^2}{2} \nabla \log(\pi(\textbf{X}_t))dt + \gamma d\textbf{B}_t, \ \textbf{X}_0 = \textbf{x}_0.
     \label{eq:Langevin with speed}
 \end{equation}
 
@@ -36,7 +36,7 @@ If the solution to the original Langevin process \eqref{eq:Langevin equation} is
 
 \section{Resource Selection Functions}
 
-Covariates can be included in the model by specifying the UD. For this, we can use a Resource Selection function (RSF). An RSF is a function that expresses the probability of an animal utilizing a resource over all other resources in the area being studied. In this thesis I will be using an RSF of the form
+Covariates can be included in the model by specifying the UD. For this, we can use a Resource Selection function (RSF). An RSF is a function that expresses the probability of an animal utilizing a resource over all other resources in the area being studied. \textcite{michelot_langevin_2019} uses an RSF of the form
 
 
 \begin{equation}
@@ -44,11 +44,11 @@ Covariates can be included in the model by specifying the UD. For this, we can u
     \label{eq: resource selection function}
 \end{equation}
 
-$\Omega$ is the area of study, $C_i(x)$ are the spatial covariates. These can represent geographical or environmental factors that are distributed in space and that we want to study. $\beta_i$ are the coefficients that scale the spatial covariates. By using the RSF as the UD of \eqref{eq:Langevin with speed}, we can find how the various covariates affect the animal movement, and what covariates are attractive. The slope term of \eqref{eq:Langevin with speed} then becomes
+$\Omega$ is the area of study, $C_i(x)$ are the spatial covariates. the covariates can represent geographical or environmental factors that are distributed in space and that we want to study. $\beta_i$ are the coefficients that scale the spatial covariates. By using the RSF as the UD of \eqref{eq:Langevin with speed}, we can find how the various covariates affect the animal movement, and which covariates are attractive. The slope term of \eqref{eq:Langevin with speed} then becomes
 
-\begin{equation}
+$$
     \nabla log(\pi(x|\beta)) = \nabla log(\frac{exp(\sum_{i=1}^n\beta_i c_i(x))}{\int_\Omega exp(\sum_{i=1}^n\beta_i c_i(z))dz}) =\sum_{i=1}^n \beta_i \nabla c_i(x).
-\end{equation}
+$$
 
 
 
@@ -67,12 +67,20 @@ If we observe the positions of the animal at locations $\textbf{X}_i$ at times $
 However, there is a problem with this approach. For the Langevin diffusion, there is no closed form expression for $q_\Delta$\parencite{gloaguen_stochastic_2018}. Instead of using the exact likelihood, pseudo-likelihood methods can be used instead. However, one of the most used methods for approximating SDE is the EM method described in \ref{subsec: Euler-Maruyama}. The Langevin process transition will then be approximated as
 
 $$
-    \textbf{X}_{i+1} = \textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla log(\pi(\textbf{X}_i)) + \sqrt{\Delta_i}\gamma \bm{\epsilon}_i, \ \ i = 1,\dots , K-1.
+    \textbf{X}_{i+1} = \textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla log(\pi(\textbf{X}_i)) + \sqrt{\Delta_i}\gamma \bm{\epsilon}_i, \ \ i = 1,\dots , K-1,
 $$
 
-where $\bm{\epsilon}_i$ are standard two-dimensional Gaussian distributions. Using this approximation, we get the transition densities $q_{\Delta_i}(\textbf{x}_{i+1} | \textbf{x}_i, \theta) = \mathcal{N}(\textbf{x}_i + \frac{\gamma^2 \Delta_i}{2}\nabla log(\pi(\textbf{x}_i)), \Delta \gamma^2 I_{2*2})$, and we get the likelihood approximation
+where $\bm{\epsilon}_i$ are standard two-dimensional Gaussian distributions. Using this approximation, we get the transition densities 
 
-$$L(\bm{\beta}, \gamma^2 | \textbf{X}) = \prod_{i=0}^{K-1} \mathcal{N}(\textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla log(\pi(\textbf{X}_i)), \Delta_i \gamma^2 I_{2*2})$$
+$$
+q_{\Delta_i}(\textbf{x}_{i+1} | \textbf{x}_i, \theta) = \mathcal{N}(\textbf{x}_i + \frac{\gamma^2 \Delta_i}{2}\nabla \log(\pi(\textbf{x}_i)), \Delta \gamma^2 I_{2*2}),
+$$
+
+and we get the likelihood approximation
+
+$$
+L(\bm{\beta}, \gamma^2 | \textbf{X}) = \prod_{i=0}^{K-1} \mathcal{N}(\textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla \log(\pi(\textbf{X}_i)), \Delta_i \gamma^2 I_{2*2}).
+$$
 
 \parencite{iacus_simulation_2008}.
 
@@ -83,7 +91,7 @@ $$L(\bm{\beta}, \gamma^2 | \textbf{X}) = \prod_{i=0}^{K-1} \mathcal{N}(\textbf{X
 
 \section{Estimating Parameters}
 \label{sec: estimating parameters}
-we can use the Langevin process transition approximation from Subsection~\ref{sec: Likelihood Approximation of Langevin Process} to estimate the parameters used in the model. If we let $\textbf{Y}_i = (\textbf{X}_{i+1} - \textbf{X}_i)/\sqrt{\Delta_i}$ be the increments of the observed Langevin process, we get $\textbf{Y}_i = \frac{\gamma^2}{2}\nabla log(\pi(\textbf{X}_i)) + \gamma \bm \epsilon_i$. In the case where we are using a RSF with covariates $j$, we can write $\nabla log(\pi(\textbf{X}_i)) = \sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i)$, so we get
+we can use the Langevin process transition approximation from Subsection~\ref{sec: Likelihood Approximation of the Langevin Process} to estimate the parameters used in the model. If we let $\textbf{Y}_i = (\textbf{X}_{i+1} - \textbf{X}_i)/\sqrt{\Delta_i}$ be the increments of the observed Langevin process, we get $\textbf{Y}_i = \frac{\gamma^2}{2}\nabla log(\pi(\textbf{X}_i)) + \gamma \bm \epsilon_i$. In the case where we are using a RSF with covariates $j$, we can write $\nabla log(\pi(\textbf{X}_i)) = \sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i)$, so we get
 
 $$
     \textbf{Y}_i = \frac{\gamma^2 \sqrt{\Delta_i}}{2}\sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i) + \gamma \bm \epsilon_i.
@@ -171,7 +179,7 @@ Figure~\ref{fig:MALA} shows that for a time interval of $\Delta_t =0.01$, the ac
 
 \subsection{Underestimation of Parameters}
 
-With the UD in Figure~\ref{fig: UD}, we can use the EM method to simulate tracks from the Langevin model and see how the estimated values of the parameters used compare to their actual values for different time increments between observations. To do this, 100 tracks were simulated using the EM method with resolution 0.01. The tracks were then thinned to give resolutions $0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1$ between the observations and then shortened so that they contained 5000 observations each, giving 100 tracks for each of the resolutions. The parameters $\gamma^2$ and $\bm \beta$ were then estimated using \eqref{eq: michelot estimates}. The resulting estimates are displayed as box plots in Figure~\ref{fig:EM_thin_boxplot}.
+With the UD in Figure~\ref{fig: UD}, we can use the EM method to simulate tracks from the Langevin model and see how the estimated values of the parameters used compare to their actual values for different time increments between observations. To do this, 100 Langevin tracks were simulated using a resolution of $0.01$ with the Perlin covariates in Figure~\ref{fig:covariate plots} and the speed parameter $\gamma^2 = 5$. The tracks were then thinned to give resolutions $\Delta_t \in \{0.01, \ 0.02, \ 0.05, \ 0.1, \ 0.2, \ 0.5, \ 1 \}$ between the observations and then shortened so that they contained 5000 observations each, giving 100 tracks for each of the resolutions. The parameters $\gamma^2$ and $\bm \beta$ were then estimated using \eqref{eq: michelot estimates}. The resulting estimates are displayed as box plots in Figure~\ref{fig:EM_thin_boxplot}.
 
 
 \begin{figure}[H]
@@ -182,5 +190,8 @@ With the UD in Figure~\ref{fig: UD}, we can use the EM method to simulate tracks
 \end{figure}
 
 
-The code for generating Figure~\ref{fig:EM_thin_boxplot} can be found in the GitHub repository under the name "varying dt EM estimates.R". Figure~\ref{fig:EM_thin_boxplot} shows that there is an increasing bias in the estimates of $\bm \beta$ as the time increments between the observations increases. Figure~\ref{fig:MALA} shows that for larger time increments, the EM method is no longer a good approximation for the Langevin process likelihood. This explains why the estimates are not unbiased. \parencite{michelot_langevin_2019} explains the bias by the fact that when $\Delta_t$ is large, a lot of the movement in accordance with the UD is lost, making it appear flatter than it actually is. A track might follow the slope of the UD well, but when the intermediate states are removed that information disappears. This flattening could be an explanation for why the approximation gives estimates that are closer to zero than the true values of the parameters. Another observation is that the variance of the estimates decreases as the size of the time increments increases. \parencite{michelot_langevin_2019} explains this by the fact that, for larger increments, the observations are more spaced out, meaning that they explore more of the map. When more of the covariate range is explored, the variance of the coefficient estimates is reduced. The same bias is also observed in the $\gamma^2$ estimates. The underestimation here might be because the distance traveled seems smaller when we have coarser resolutions, since some of the movement is removed. Unlike what is observed for $\bm \beta$, the variance of the estimates of $\gamma^2$ increase as the time increments increase.
+The code for generating Figure~\ref{fig:EM_thin_boxplot} can be found in the GitHub repository under the name "varying dt EM estimates.R". Figure~\ref{fig:EM_thin_boxplot} shows that there is an increasing bias in the estimates of $\bm \beta$ as the time increments between the observations increases. Figure~\ref{fig:MALA} shows that for larger time increments, the EM method is no longer a good approximation for the Langevin process likelihood. This explains why the estimates are not unbiased. \parencite{michelot_langevin_2019} explains the bias by the fact that when $\Delta_t$ is large, a lot of the movement in accordance with the UD is lost, making it appear flatter than it actually is. A track might follow the slope of the UD well, but when the intermediate states are removed, that information disappears. This flattening could be an explanation for why the approximation gives estimates that are closer to zero than the true values of the parameters. 
+
+
+Another observation is that the variance of the estimates decreases as the size of the time increments increases. \parencite{michelot_langevin_2019} explains this by the fact that, for larger increments, the observations are more spaced out, meaning that they explore more of the map. When more of the covariate range is explored, the variance of the coefficient estimates is reduced. The same bias is also observed in the $\gamma^2$ estimates. The underestimation here might be because the distance traveled seems smaller when we have coarser resolutions, since some of the movement is removed. Unlike what is observed for $\bm \beta$, the variance of the estimates of $\gamma^2$ increase as the time increments increase.
 

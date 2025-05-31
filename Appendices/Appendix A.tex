@@ -4,7 +4,7 @@
 
 
 
-\section{gradients for precomputed Brownian bridges likelihood}
+\section{Gradients for Precomputed Brownian Bridges Likelihood}
 
 In this appendix, I derive the gradient of the Langevin likelihood estimate found using importance sampling with Brownian bridges \ref{eq: importance sampling likelihood}. The same gradient will be used for the method in which the Brownian bridges are precomputed as when they are not. For the importance sampling likelihood when the bridge are not precomputed, we could have differentiated the likelihood with respect to the fact that the positions of the bridges are dependent on the speed parameter $\gamma^2$, but using a proposal that is with a small difference in variance, should still estimate the same likelihood.
 
@@ -38,7 +38,7 @@ If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observa
 
 
 \subsection{Gradient With Respect to $\gamma^2$}
-We le the probability of generating the bridges $P_ij$ be constant with respect to $\gamma^2$. This gives
+We le the probability of generating the bridges $P_{ij}$ be constant with respect to $\gamma^2$. This gives
 
 $$
 \partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
