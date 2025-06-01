@@ -1,5 +1,5 @@
 
-This thesis is motivated by the results presented in \parencite{michelot_langevin_2019}. In the article, a model for animal movement based on the Langevin process is presented, and it is shown how this model can be used to estimate the UD of an animal. A problem that arises when the time between observations is large and, which is discussed by \parencite{michelot_langevin_2019}, is that as the time between observations increases, there is an increasing bias in the parameter estimates. In this section, the model used by \parencite{michelot_langevin_2019} is presented and some of the results of the article are reproduced.
+This thesis is motivated by the results presented in \textcite{michelot_langevin_2019}. In the article, a model for animal movement based on the Langevin process is presented, and it is shown how this model can be used to estimate the UD of an animal. A problem that arises when the time between observations is large and, which is discussed by \textcite{michelot_langevin_2019}, is that as the time between observations increases, there is an increasing bias in the parameter estimates. In this section, the model used by \textcite{michelot_langevin_2019} is presented and some of the results of the article are reproduced.
 
 
 
@@ -12,18 +12,18 @@ The Langevin process is a form of diffusion process described in Section~\ref{se
 \end{equation}
 
 
-$\pi$ is referred to as the UD, and the drift term $\nabla log(\pi(\textbf{X}_t))$ steers the particle $X_t$ to areas of $\pi$ with a grater value. In an animal setting, this can be interpreted as the tendency of an animal to be attracted to certain areas over others.
+$\pi$ is referred to as the UD, and the drift term $\nabla \log(\pi(\textbf{X}_t))$ steers the particle $X_t$ to areas of $\pi$ with a greater value. In an animal setting, this can be interpreted as the tendency of an animal to be attracted to certain areas over others.
 
 
 
-\parencite{dalalyan_theoretical_2017} states that under the conditions that $\pi$ is convex and has a Lipschitz continuous gradient, the diffusion equation has a unique solution, which is a continuous-time Markov process with $\pi$ as the stationary distribution of $X_t$. This means that the time an animal spends in an area over the long term is determined by the UD, and we can write that
+\textcite{dalalyan_theoretical_2017} states that under the conditions that $\pi$ is convex and has a Lipschitz continuous gradient, the diffusion equation has a unique solution, which is a continuous-time Markov process with $\pi$ as the stationary distribution of $X_t$. This means that the time an animal spends in an area over the long term is determined by the UD, and we can write that
 
-\begin{equation}
+$$
     P(\textbf{X}_t \in A ) = \int_A \pi(\textbf{z})d\textbf{z}.
-\end{equation}
+$$
 
 
-To make use of the Langevin movement model in practice, there needs to be a parameter to control the speed of the process. This is because, although two animals might have the same UD, the speed at which they travel may be different. In the Langevin process \eqref{eq:Langevin equation} the speed of a particle is determined by the UD, so two particles with the same distribution. In reality, two animals can have the same UD, but still have different speeds. \parencite{roberts_optimal_1998} adds a speed parameter $\gamma^2$ to the Langevin process, which can change the speed of diffusion. The resulting process can be expressed by the equation
+To make use of the Langevin movement model in practice, there needs to be a parameter to control the speed of the process. This is because, although two animals might have the same UD, the speed at which they travel may be different. In the Langevin process \eqref{eq:Langevin equation} the speed of a particle is determined by the UD, so two particles with the same distribution. In reality, two animals can have the same UD, but still have different speeds. \textcite{roberts_optimal_1998} adds a speed parameter $\gamma^2$ to the Langevin process, which can change the speed of diffusion. The resulting process can be expressed by the equation
 
 \begin{equation}
     d\textbf{X}_t = \frac{\gamma^2}{2} \nabla \log(\pi(\textbf{X}_t))dt + \gamma d\textbf{B}_t, \ \textbf{X}_0 = \textbf{x}_0.
@@ -44,15 +44,15 @@ Covariates can be included in the model by specifying the UD. For this, we can u
     \label{eq: resource selection function}
 \end{equation}
 
-$\Omega$ is the area of study, $C_i(x)$ are the spatial covariates. the covariates can represent geographical or environmental factors that are distributed in space and that we want to study. $\beta_i$ are the coefficients that scale the spatial covariates. By using the RSF as the UD of \eqref{eq:Langevin with speed}, we can find how the various covariates affect the animal movement, and which covariates are attractive. The slope term of \eqref{eq:Langevin with speed} then becomes
+$\Omega$ is the area of study, $C_i(x)$ are the spatial covariates. The covariates can represent geographical or environmental factors that are distributed in space and that we want to study. $\beta_i$ are the coefficients that scale the spatial covariates. By using the RSF as the UD of \eqref{eq:Langevin with speed}, we can find how the various covariates affect the animal movement, and which covariates are attractive. The slope term of \eqref{eq:Langevin with speed} then becomes
 
 $$
-    \nabla log(\pi(x|\beta)) = \nabla log(\frac{exp(\sum_{i=1}^n\beta_i c_i(x))}{\int_\Omega exp(\sum_{i=1}^n\beta_i c_i(z))dz}) =\sum_{i=1}^n \beta_i \nabla c_i(x).
+    \nabla \log(\pi(x|\beta)) = \nabla \log(\frac{exp(\sum_{i=1}^n\beta_i c_i(x))}{\int_\Omega exp(\sum_{i=1}^n\beta_i c_i(z))dz}) =\sum_{i=1}^n \beta_i \nabla c_i(x).
 $$
 
 
 
-Environmental covariates are usually not expressed as analytical functions, as is assumed for the Langevin model and the Euler approximation of it. Most often, they are stored as point data on a grid. To find the value of the covariates at points outside the grid, we therefore have to interpolate from the grid. We can find values for the gradient of the covariates using the method described in Subsection~\ref{subsec: gradient estimation}
+Environmental covariates are usually not expressed as analytical functions, as is assumed for the Langevin model and the Euler approximation of it. Most often, they are stored as point data on a grid. To find the value of the covariates at points outside the grid, we therefore have to interpolate from the grid. We can find values for the gradient of the covariates using the method described in Subsection~\ref{subsec: gradient estimation}.
 
 
 \section{Likelihood Approximation of Langevin Process}
@@ -64,10 +64,10 @@ If we observe the positions of the animal at locations $\textbf{X}_i$ at times $
     \label{eq: Langevin likelihood}
 \end{equation}
 
-However, there is a problem with this approach. For the Langevin diffusion, there is no closed form expression for $q_\Delta$\parencite{gloaguen_stochastic_2018}. Instead of using the exact likelihood, pseudo-likelihood methods can be used instead. However, one of the most used methods for approximating SDE is the EM method described in \ref{subsec: Euler-Maruyama}. The Langevin process transition will then be approximated as
+However, there is a problem with this approach. For the Langevin diffusion, there is no closed form expression for $q_\Delta$\parencite{gloaguen_stochastic_2018}. Instead of using the exact likelihood, pseudo-likelihood methods can be used instead. However, one of the most used methods for approximating SDE is the EM method described in Subsection~\ref{subsec: Euler-Maruyama}. The Langevin process transition will then be approximated as
 
 $$
-    \textbf{X}_{i+1} = \textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla log(\pi(\textbf{X}_i)) + \sqrt{\Delta_i}\gamma \bm{\epsilon}_i, \ \ i = 1,\dots , K-1,
+    \textbf{X}_{i+1} = \textbf{X}_i + \frac{\gamma^2 \Delta_i}{2}\nabla \log(\pi(\textbf{X}_i)) + \sqrt{\Delta_i}\gamma \bm{\epsilon}_i, \ \ i = 1,\dots , K-1,
 $$
 
 where $\bm{\epsilon}_i$ are standard two-dimensional Gaussian distributions. Using this approximation, we get the transition densities 
@@ -91,7 +91,7 @@ $$
 
 \section{Estimating Parameters}
 \label{sec: estimating parameters}
-we can use the Langevin process transition approximation from Subsection~\ref{sec: Likelihood Approximation of the Langevin Process} to estimate the parameters used in the model. If we let $\textbf{Y}_i = (\textbf{X}_{i+1} - \textbf{X}_i)/\sqrt{\Delta_i}$ be the increments of the observed Langevin process, we get $\textbf{Y}_i = \frac{\gamma^2}{2}\nabla log(\pi(\textbf{X}_i)) + \gamma \bm \epsilon_i$. In the case where we are using a RSF with covariates $j$, we can write $\nabla log(\pi(\textbf{X}_i)) = \sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i)$, so we get
+We can use the Langevin process transition approximation from Section~\ref{sec: Likelihood Approximation of the Langevin Process} to estimate the parameters used in the model. If we let $\textbf{Y}_i = (\textbf{X}_{i+1} - \textbf{X}_i)/\sqrt{\Delta_i}$ be the increments of the observed Langevin process, we get $\textbf{Y}_i = \frac{\gamma^2}{2}\nabla \log(\pi(\textbf{X}_i)) + \gamma \bm \epsilon_i$. In the case where we are using a RSF with covariates $j$, we can write $\nabla log(\pi(\textbf{X}_i)) = \sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i)$, so we get
 
 $$
     \textbf{Y}_i = \frac{\gamma^2 \sqrt{\Delta_i}}{2}\sum_{k = 1}^j \beta_k \nabla c_k(\textbf{X}_i) + \gamma \bm \epsilon_i.
@@ -146,7 +146,7 @@ $$
 \section{Assessment of the Model}
 
 \subsection{Simulating Covariates}
-To study the Langevin movement model, \parencite{michelot_langevin_2019} simulates the Langevin process using two covariates on a grid simulated from  Matérn Gaussian random fields, and one covariate which is the square of the euclidean distance to the origin. The last of these covariates ensures that the Langevin process tracks do not exit the study area. Simulating covariates from a Matérn field is memory and time intensive. Because of this, I instead use Perlin noise simulated using the R package "ambient" with frequency parameter 0.05 and scaled by 3. The two covariates simulated using Perlin noise are shown in figure~\ref{fig:covariate plots}. In addition, the figure displays the UD found using the formula for a RSF \eqref{eq: resource selection function} with all three covariates.
+To study the Langevin movement model, \textcite{michelot_langevin_2019} simulates the Langevin process using two covariates on a grid simulated from  Matérn Gaussian random fields, and one covariate which is the square of the Euclidean distance to the origin. The last of these covariates ensures that the Langevin process tracks do not exit the study area. Simulating covariates from a Matérn field is memory and time intensive. Because of this, I instead use Perlin noise simulated using the R package "ambient" with frequency parameter 0.05 and scaled by 3. The two covariates simulated using Perlin noise are shown in Figure~\ref{fig:covariate plots}. In addition, the figure displays the UD found using the formula for a RSF \eqref{eq: resource selection function} with all three covariates.
 
 \begin{figure}[H]% 
     \centering
@@ -164,7 +164,7 @@ The code for generating Figure \ref{fig:covariate plots} can be found in the git
 
 
 \subsection{Accuracy of the Approximation}
-To demonstrate the accuracy of the Euler approximation at various step intervals, \parencite{michelot_langevin_2019} uses the Metropolis adjusted Langevin algorithm (MALA) \parencite{roberts_exponential_1996}. This algorithm uses the EM method as a proposal in the metropolis-Hastings algorithm and then uses the UD as the target distribution. This ensures that the stationary distribution of the EM method is actually the UD. The EM method only approximates the Langevin process when the time intervals are small, so we should expect the acceptance rate of MALA to be small when the time intervals are large and close to one when the time intervals are small. Because of this, we can use the MALA acceptance rate to judge at which time resolution the EM method becomes a good approximation of the Langevin process. \parencite{michelot_langevin_2019} simulates Langevin tracks at 9 resolutions $\Delta_t\in \{ 0.01, \ 0.02, \ 0.05, \ 0.1, \ 0.2, \ 0.5, \ 1, \ 2, \ 5 \}$ using the speed parameter $\gamma^2 = 5$, the covariates from Figure\ref{fig:covariate plots} and simulating up to time $T=1000$. They then computed the average acceptance rate for each of the resolutions. The resulting acceptance rates are shown in Figure~\ref{fig:MALA}, and is reproduced using the code from \parencite{michelot_langevin_2019}. The code can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "MALA figure.R"
+To demonstrate the accuracy of the Euler approximation at various step intervals, \textcite{michelot_langevin_2019} uses the Metropolis adjusted Langevin algorithm (MALA) \parencite{roberts_exponential_1996}. This algorithm uses the EM method as a proposal in the metropolis-Hastings algorithm and then uses the UD as the target distribution. This ensures that the stationary distribution of the EM method is actually the UD. The EM method only approximates the Langevin process when the time intervals are small, so we should expect the acceptance rate of MALA to be small when the time intervals are large and close to one when the time intervals are small. Because of this, we can use the MALA acceptance rate to judge at which time resolution the EM method becomes a good approximation of the Langevin process. \textcite{michelot_langevin_2019} simulates Langevin tracks at 9 resolutions $\Delta_t\in \{ 0.01, \ 0.02, \ 0.05, \ 0.1, \ 0.2, \ 0.5, \ 1, \ 2, \ 5 \}$ using the speed parameter $\gamma^2 = 5$, the covariates from Figure \ref{fig:covariate plots} and simulating up to time $T=1000$. They then computed the average acceptance rate for each of the resolutions. The resulting acceptance rates are shown in Figure~\ref{fig:MALA}, and is reproduced using the code from \textcite{michelot_langevin_2019}. The code can be found in the github repository in Appendix~\ref{Appendix: github repo} under the file name "MALA figure.R"
 
 \begin{figure}[H]
     \centering
@@ -190,7 +190,7 @@ With the UD in Figure~\ref{fig: UD}, we can use the EM method to simulate tracks
 \end{figure}
 
 
-The code for generating Figure~\ref{fig:EM_thin_boxplot} can be found in the GitHub repository under the name "varying dt EM estimates.R". Figure~\ref{fig:EM_thin_boxplot} shows that there is an increasing bias in the estimates of $\bm \beta$ as the time increments between the observations increases. Figure~\ref{fig:MALA} shows that for larger time increments, the EM method is no longer a good approximation for the Langevin process likelihood. This explains why the estimates are not unbiased. \parencite{michelot_langevin_2019} explains the bias by the fact that when $\Delta_t$ is large, a lot of the movement in accordance with the UD is lost, making it appear flatter than it actually is. A track might follow the slope of the UD well, but when the intermediate states are removed, that information disappears. This flattening could be an explanation for why the approximation gives estimates that are closer to zero than the true values of the parameters. 
+The code for generating Figure~\ref{fig:EM_thin_boxplot} can be found in the GitHub repository under the name "varying dt EM estimates.R". Figure~\ref{fig:EM_thin_boxplot} shows that there is an increasing bias in the estimates of $\bm \beta$ as the time increments between the observations increases. Figure~\ref{fig:MALA} shows that for larger time increments, the EM method is no longer a good approximation for the Langevin process likelihood. This explains why the estimates are not unbiased. \textcite{michelot_langevin_2019} explains the bias by the fact that when $\Delta_t$ is large, a lot of the movement in accordance with the UD is lost, making it appear flatter than it actually is. A track might follow the slope of the UD well, but when the intermediate states are removed, that information disappears. This flattening could be an explanation for why the approximation gives estimates that are closer to zero than the true values of the parameters. 
 
 
 Another observation is that the variance of the estimates decreases as the size of the time increments increases. \parencite{michelot_langevin_2019} explains this by the fact that, for larger increments, the observations are more spaced out, meaning that they explore more of the map. When more of the covariate range is explored, the variance of the coefficient estimates is reduced. The same bias is also observed in the $\gamma^2$ estimates. The underestimation here might be because the distance traveled seems smaller when we have coarser resolutions, since some of the movement is removed. Unlike what is observed for $\bm \beta$, the variance of the estimates of $\gamma^2$ increase as the time increments increase.

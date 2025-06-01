@@ -1,26 +1,29 @@
-\chapter{}
+
+
+\chapter*{B - Gradients for Precomputed Brownian Bridges Likelihood}
 \label{Appendix: finding BB gradient}
+\addcontentsline{toc}{chapter}{\protect\numberline{}B - Gradients for Precomputed Brownian Bridges Likelihood} 
 
 
 
 
-\section{Gradients for Precomputed Brownian Bridges Likelihood}
+%\section*{Gradients for Precomputed Brownian Bridges Likelihood}
 
 In this appendix, I derive the gradient of the Langevin likelihood estimate found using importance sampling with Brownian bridges \ref{eq: importance sampling likelihood}. The same gradient will be used for the method in which the Brownian bridges are precomputed as when they are not. For the importance sampling likelihood when the bridge are not precomputed, we could have differentiated the likelihood with respect to the fact that the positions of the bridges are dependent on the speed parameter $\gamma^2$, but using a proposal that is with a small difference in variance, should still estimate the same likelihood.
 
 
-\subsection{Gradient With Respect to \beta}
-Using the notation $L_{ij} = \frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk})$, where $f_{ijk}$ is the density of transition $k$ of bridge $j$ between observations $i$ and $i+1$, and $P_{ij}$ is the density of bridge $j$ between observations $i$ and $i+1$, we can write
+\subsection*{Gradient With Respect to \beta}
+Using the notation $L_{ij} = \frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}$, where $f_{ijk}$ is the density of transition $k$ of bridge $j$ between observations $i$ and $i+1$, and $P_{ij}$ is the density of bridge $j$ between observations $i$ and $i+1$, we can write
 
 $$
-\partial_{\bm \beta} l =  \partial_{\bm \beta} \sum_{i=1}^K log(\frac{1}{M}\sum_{j=1}^M\frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}) =  \frac{\sum_{j=1}^ML_{ij}\partial_{\bm \bm \beta} log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
+\partial_{\bm \beta} l =  \partial_{\bm \beta} \sum_{i=1}^K \log(\frac{1}{M}\sum_{j=1}^M\frac{1}{P_{ij}}\prod_{k=0}^N f_{ijk}) =  \frac{\sum_{j=1}^ML_{ij}\partial_{\bm \bm \beta} \log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
 $$
 
 
 
 Since the proposal of bridge $ij$, $P_{ij}$, is independent of $\bm \beta$, we get
 $$
-\partial_{\bm \beta} log(L_{ij}) =  \sum_{k=0}^N \partial_{\bm \beta} log(f_{ijk}).
+\partial_{\bm \beta} \log(L_{ij}) =  \sum_{k=0}^N \partial_{\bm \beta} \log(f_{ijk}).
 $$
 
 If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observation i and i+1 and let $g$ be the gradiant of the log of the utilization distribution at a given position, then we can write
@@ -28,7 +31,7 @@ If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observa
 
 \begin{equation} 
 \begin{split}
-\partial_{\bm \beta} log(f_{ijk}) & = \partial_{\bm \beta} (-log(2\pi \Delta \gamma^2) - \frac{1}{2\Delta \gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2) \\
+\partial_{\bm \beta} \log(f_{ijk}) & = \partial_{\bm \beta} \bigg(-\log(2\pi \Delta \gamma^2) - \frac{1}{2\Delta \gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \bigg) \\
 & = -\frac{1}{2\Delta\gamma^2}\partial_{\bm \beta} (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \frac{d}{dx} \left\lVert x \right\rVert_2^2(\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \\
 & = \frac{1}{2} g(\textbf{B}_{ijk})^T(\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta).
 \end{split}
@@ -37,28 +40,28 @@ If we let $\textbf{B}_{ijk}$ be the k-th node in the j-th bridge between observa
 
 
 
-\subsection{Gradient With Respect to $\gamma^2$}
-We le the probability of generating the bridges $P_{ij}$ be constant with respect to $\gamma^2$. This gives
+\subsection*{Gradient With Respect to $\gamma^2$}
+We let the probability of generating the bridges $P_{ij}$ be constant with respect to $\gamma^2$. This gives
 
 $$
-\partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
+\partial_{\gamma^2}l = \frac{\sum_{j=1}^ML_{ij}\partial_{\gamma^2} \log(L_{ij})}{\sum_{j=1}^ML_{ij}}.
 $$
 
 Then we must first find
 $$
-\partial_{\gamma^2} log(f_{ijk}) = \partial_{\gamma^2} (-log(\gamma^2) - \frac{1}{2\Delta\gamma^2}\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2).
+\partial_{\gamma^2} \log(f_{ijk}) = \partial_{\gamma^2} \bigg(-\log(\gamma^2) - \frac{1}{2\Delta\gamma^2}\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2\bigg).
 $$
 
 Using the product rule, we get
 
 \begin{align*}
-\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} -(\partial_{\gamma^2} \frac{1}{2\Delta \gamma^2})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} \partial_{\gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2.
+\partial_{\gamma^2} \log(f_{ijk})  = -\frac{1}{\gamma^2} -(\partial_{\gamma^2} \frac{1}{2\Delta \gamma^2})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} \partial_{\gamma^2} \left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2.
 \end{align*}
 
 For the second term, we can use the chain-rule for vector-differentiation to get
 
 \begin{align*}
-\partial_{\gamma^2} log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} (\partial_{\gamma^2} \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \partial_x \left\lVert x\right\rVert_2^2 (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta ).
+\partial_{\gamma^2} \log(f_{ijk})  = -\frac{1}{\gamma^2} +( \frac{1}{\Delta \gamma^4})\left\lVert \textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta \right\rVert_2^2 \\ -  \frac{1}{2\Delta \gamma^2} (\partial_{\gamma^2} \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta) \partial_x \left\lVert x\right\rVert_2^2 (\textbf{B}_{ijk+1} - \textbf{B}_{ijk} - \frac{\Delta\gamma^2}{2} g(\textbf{B}_{ijk})\bm \beta ).
 \end{align*}
 
 

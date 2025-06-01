@@ -4,7 +4,7 @@ Stochastic differential equations can be used to describe how stochastic variabl
 
 
 \subsection{Brownian Motion}
-Brownian motion is a continuous stochastic process which can be characterized as the limit of a random walk process where the Gaussian step's length tend to 0. A stochastic process $B = \{B_t:t\geq 0\}$ is defined as a Brownian motion if it has continuous paths and independent Gaussian increments such that $B_0 = 0$ with probability 1, $E[B_t] = 0$ and $Var(B_t - B_s) = t-s$, for $0 < s < t$\parencite{iacus_simulation_2008}.  
+Brownian motion is a continuous stochastic process which can be characterized as the limit of a random walk process where the Gaussian step's length tend to 0. A stochastic process $B = \{B_t:t\geq 0\}$ is defined as a Brownian motion if it has continuous paths and independent Gaussian increments such that $B_0 = 0$ with probability 1, $E[B_t] = 0$ and $Var(B_t - B_s) = t-s$, for $0 < s < t$ \parencite{iacus_simulation_2008}.  
 
 
 Using this definition, we can define the standard Brownian motion of k-dimensional starting at $\textbf{x} \in \mathbb{R}^k$ as the vector of k-dimensional $\mathbf{B}^\mathbf{x} = (B^{x_1}, \dots , B^{x_k})$, which contains standard Brownian motions $B^{x_i}$ with starting points $x_i$\parencite{bhattacharya_continuous_2023}.
@@ -14,30 +14,17 @@ Lastly, we can define an even more general version of the Brownian motion. That 
 \cite{michelot_langevin_2019}
 
 
-\begin{comment}
 
-\subsection{Stochastic Integrals}
-The integral of a function with respect to the Brownian motion is known as an Itô integral
-$$I(X) = \int_0^T X(u)dB_u.$$
-
-\parencite{iacus_simulation_2008}
-
-
-Let $f(t)$ be a non-stochastic continuously differentiable function. Then
-
-$$\int_\alpha^\beta f(s)dB_s = f(\beta)B_\beta - f(\alpha)B_\alpha - \int_\alpha^\beta B_sf'(s) ds   $$
-
-\end{comment}
 
 \subsection{Diffusion Processes}
 \label{sec: diffusion processes}
 We can use Brownian motion to define a type of SDE called a stochastic diffusion equation. This defines a stochastic diffusion process as the solution to the equation
 
-\begin{equation}
+$$
     d{\textbf{X}}_t = {\pmb{\mu}} ({\textbf{X}}_t )dt + \pmb{\sigma}({X}_t ) d\textbf{B}_t, \   t > 0 , \ \textbf{X}(0) = \textbf{X}_0.
-\end{equation}
+$$
 
-where $\textbf{B}_t$ is a k-dimensional standard Brownian motion, and $\textbf{X}_t$ is a k-dimensional stochastic variable. $\pmb{\mu}$ is a k-dimensional vector known as the drift of the equation, and $\pmb{\sigma}(t)$ is a $k\times k$-dimensional matrix, where $\pmb{\sigma}(t)\pmb{\sigma}(t)^T$ is known as the diffusion matrix. The displacements $\textbf{X}_{t+dt} - \textbf{X}_t$ are approximately Gaussian when $\pmb{\mu}$ and $\pmb{\sigma}^2(x)$ are sufficiently smooth, with mean $\pmb{\mu}(\textbf{X}_t)dt$ and variance $\pmb{\sigma}(\textbf{X}_t)\pmb{\sigma}(\textbf{X}_t)^Tdt$ \parencite{bhattacharya_continuous_2023}
+where $\textbf{B}_t$ is a k-dimensional standard Brownian motion, and $\textbf{X}_t$ is a k-dimensional stochastic variable. $\pmb{\mu}$ is a k-dimensional vector known as the drift of the equation, and $\pmb{\sigma}(t)$ is a $k\times k$-dimensional matrix, where $\pmb{\sigma}(t)\pmb{\sigma}(t)^T$ is known as the diffusion matrix. The displacements $\textbf{X}_{t+dt} - \textbf{X}_t$ are approximately Gaussian when $\pmb{\mu}$ and $\pmb{\sigma}^2(x)$ are sufficiently smooth, with mean $\pmb{\mu}(\textbf{X}_t)dt$ and variance $\pmb{\sigma}(\textbf{X}_t)\pmb{\sigma}(\textbf{X}_t)^Tdt$ \parencite{bhattacharya_continuous_2023}.
 
 
 
@@ -46,11 +33,10 @@ where $\textbf{B}_t$ is a k-dimensional standard Brownian motion, and $\textbf{X
 \label{subsec: Euler-Maruyama}
 Often there is no analytical solution available for SDEs. In these cases, the distribution which results from the SDE has to be approximated by using discretization schemes.  One of the most popular approximation schemes for SDEs is the Euler-Maruyama (EM) discretization, which is inspired by Euler's method for initial value problems. The approximation can be applied to any SDE of the form
 
-\begin{equation}
-    d\textbf{X}_t = \mu(t, \textbf{X}_t)dt + \sigma(t, \textbf{X}_t)d\textbf{B}_t.
-\end{equation}
-
-Where $\textbf{B}_t$ is the standard d-dimensional Brownian motion. For such equations, it defines a continuous approximate solution $Y(t)$ on a discretized time interval $0=t_0 < t_1 < \dots < t_N = T$. At the discretization points, the approximation is given by
+$$
+d\textbf{X}_t = \mu(t, \textbf{X}_t)dt + \sigma(t, \textbf{X}_t)d\textbf{B}_t,
+$$
+where $\textbf{B}_t$ is the standard d-dimensional Brownian motion. For such equations, it defines a continuous approximate solution $Y(t)$ on a discretized time interval $0=t_0 < t_1 < \dots < t_N = T$. At the discretization points, the approximation is given by
 
 \begin{equation}
     \textbf{X}_{i+1} = \textbf{X}_i + \mu(t_i, \textbf{X}_i)(t_{i+1} - t_i) + \sigma(t_i, \textbf{X}_i)(\textbf{B}_{i+1} - \textbf{B}_i).
@@ -153,7 +139,7 @@ $$
 \section{Metropolis-Hastings Algorithm}
 
 
-The Metropolis-Hasting algorithm constructs a Markov chain in such a way that its stationary distribution is that of a target distribution $\pi$ from which we are trying to sample. The algorithm uses a proposal kernel $p(\phi | \theta)$ to propose a new value $\phi$ for the Markov chain, given the previous value $\theta$. If the density of the proposal satisfies the reversibility condition $\pi(\theta) p(\theta|\phi) = \pi(\phi) p(\phi|\theta)$ for all $\phi,\theta$ in the state space of the Markov chain, then the Markov chain converges to the target distribution. The Metropolis-Hastings algorithm achieves this by using a proposal density $q(\phi|\theta)$ and a rejection probability $\alpha(\phi|\theta)$. The proposed value from the proposal density is accepted as a sample observation with a probability $1-\alpha$, which ensures that the reversibility condition is satisfied. If the proposal is rejected, the chain stays at the initial value, and the initial value. The rejection probability of the Metropolis-Hastings algorithm is
+The Metropolis-Hasting algorithm constructs a Markov chain in such a way that its stationary distribution is that of a target distribution $\pi$ from which we are trying to sample. The algorithm uses a proposal kernel $p(\phi | \theta)$ to propose a new value $\phi$ for the Markov chain, given the previous value $\theta$. If the density of the proposal satisfies the reversibility condition $\pi(\theta) p(\theta|\phi) = \pi(\phi) p(\phi|\theta)$ for all $\phi,\theta$ in the state space of the Markov chain, then the Markov chain converges to the target distribution. The Metropolis-Hastings algorithm achieves this by using a proposal density $q(\phi|\theta)$ and a rejection probability $\alpha(\phi|\theta)$. The proposed value from the proposal density is accepted as a sample observation with a probability $1-\alpha$, which ensures that the reversibility condition is satisfied. If the proposal is rejected, the chain stays at the same value and the same value is added to the sample. The rejection probability of the Metropolis-Hastings algorithm is
 
 $$
     \alpha = min \left( 1, \frac{f_t(\phi)q(\phi|\theta)}{f_t(\theta)q(\theta|\phi)} \right) = min \left( 1, \frac{\pi(\phi)L(X,Y|\phi)q(\phi|\theta)}{\pi(\theta)L(X,Y|\theta)q(\theta|\phi)} \right).
@@ -197,11 +183,11 @@ $$
 \draw[dashed, ->] (state1.east) -- (staten.west);
 \end{tikzpicture} 
 \end{center}
-     \caption[State space model]{graph of state space model. $X_i$ are hidden states and $Z_i$ are observations. The arrows show the dependency between the variables.}
+     \caption[State space model]{Graph of state space model. $X_i$ are hidden states and $Z_i$ are observations. The arrows show the dependency between the variables.}
     \label{fig: state space model}
 \end{figure}
  
- In the case where $f$ and $h$ are linear, we can use the Kalman filter to find the likelihood of observations of the state-space model. In this thesis, the transition function used is not linear. What can be used instead is the EKF, which is a nonlinear extension of the Kalman filter. Using the EKF, we get an estimate $\hat{\textbf{X}}_{n|m}$ for the hidden state $\textbf{X}_n$ using the observations up to $\textbf{Z}_m$, using a predict step and an update step:
+ Figure~\ref{fig: state space model} shows the dependencies in a state space model. In the case where $f$ and $h$ are linear, we can use the Kalman filter to find the likelihood of observations of the state-space model. In this thesis, the transition function used is not linear. What can be used instead is the EKF, which is a nonlinear extension of the Kalman filter. Using the EKF, we get an estimate $\hat{\textbf{X}}_{n|m}$ for the hidden state $\textbf{X}_n$ using the observations up to $\textbf{Z}_m$, using a predict step and an update step:
 
 
 
@@ -261,11 +247,11 @@ If $\sigma^2$ exists, then the central limit theorem implies that $\hat{\mu}$ is
 \label{subsec: importance sampling theory}
 Often, the variance of the estimator \eqref{eq: monte carlo estimator} can be large. This is especially true if events of interest for $h$ rarely occur under $f$. The idea of importance sampling is to draw from a different distribution $g$ which has higher probability for the events we are interested in, and then to adjust for the fact that we are not sampling from $f$. The expected value $\mu$ can be written in an alternate form $\int h(x)f(x)dx = \int h(x)\frac{f(x)}{g(x)}g(x) dx$ where we are taking an expectation with respect to $g$, instead of $f$. The Monte Carlo estimator then becomes
 
-\begin{equation}
+$$
     \hat{\mu} = \frac{1}{N} \sum_{i=1}^N h(X_i)\frac{f(X_i)}{g(X_i)}.
-\end{equation}
+$$
 
-For this estimator to work, it is important that the support of $g$ be equal to the support of $f$. Furthermore, if we want the estimator to reduce variability, $\frac{f(x)}{g(x)}$ should be bounded and $g$ should have heavier tails than $f$. Otherwise, a draw from $g$ with low probability, but high probability for $f$ would give a large $\frac{f(x)}{g(x)}$ which would make that sample dominate the estimate. This in turn would give an increased variance to the importance sampling estimator. Ideally, then, we want $\frac{f(x)}{g(x)}$ to be large only when $h(x)$ is small. \parencite{givens2013computational}
+For this estimator to work, it is important that the support of $g$ be equal to the support of $f$. Furthermore, if we want the estimator to reduce variability, $\frac{f(x)}{g(x)}$ should be bounded and $g$ should have heavier tails than $f$. Otherwise, a draw from $g$ with low probability, but high probability for $f$, would give a large $\frac{f(x)}{g(x)}$ which would make that sample dominate the estimate. This in turn would give an increased variance to the importance sampling estimator. Ideally, then, we want $\frac{f(x)}{g(x)}$ to be large only when $h(x)$ is small. \parencite{givens2013computational}
 
 
 
